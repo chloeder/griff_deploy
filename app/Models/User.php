@@ -19,7 +19,7 @@ use Filament\Panel;
 class User extends Authenticatable implements FilamentUser
 {
   use HasApiTokens, HasFactory, Notifiable;
-  // Test
+
   public function canAccessPanel(Panel $panel): bool
   {
     return str_ends_with($this->username, '@bagopsresminahasa.online');
