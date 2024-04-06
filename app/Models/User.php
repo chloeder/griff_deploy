@@ -12,18 +12,22 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Ramsey\Uuid\Uuid;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 
 
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasName
 {
   use HasApiTokens, HasFactory, Notifiable;
   public function canAccessPanel(Panel $panel): bool
   {
     return true;
   }
-
+  public function getFilamentName(): string
+  {
+    return $this->getAttributeValue('username');
+  }
   public function isAdmin()
   {
     return $this->role === 'Admin';
