@@ -13,7 +13,7 @@ class TokoPolicy
    */
   public function viewAny(User $user): bool
   {
-    return $user->isAdmin() || $user->isLeader() || $user->isSesm();
+    return $user->isAdmin() || $user->isLeader() || $user->isSesm() || $user->isSpg();
   }
 
   /**
@@ -21,7 +21,7 @@ class TokoPolicy
    */
   public function view(User $user, Toko $toko): bool
   {
-    return $user->isAdmin() || $user->isLeader() || $user->isSesm();
+    return $user->isAdmin() || $user->isLeader() || $user->isSesm() || $user->isSpg();
   }
 
   /**
