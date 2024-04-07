@@ -33,7 +33,7 @@ class LaporanOmset extends Page implements HasTable
 
   public static function canAccess(): bool
   {
-    return auth()->user()->role === 'Admin' || auth()->user()->role === 'Leader';
+    return auth()->user()->role === 'Admin' || auth()->user()->role === 'Leader' || auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG';
   }
 
   public function table(Table $table): Table
