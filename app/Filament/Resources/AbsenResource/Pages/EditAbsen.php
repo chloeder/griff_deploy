@@ -15,6 +15,7 @@ class EditAbsen extends EditRecord
 
     $data['tanggal_keluar'] = Carbon::now()->format('Y-m-d');
     $data['waktu_keluar'] = Carbon::now()->format('H:i:s');
+    $data['status_absen'] = 'Proses';
     return $data;
   }
 

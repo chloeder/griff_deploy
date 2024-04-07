@@ -3,17 +3,23 @@
 namespace App\Filament\Resources\AbsenResource\Pages;
 
 use App\Filament\Resources\AbsenResource;
+use Closure;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListAbsens extends ListRecords
 {
-    protected static string $resource = AbsenResource::class;
+  protected static string $resource = AbsenResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\CreateAction::make(),
-        ];
-    }
+  protected function getHeaderActions(): array
+  {
+    return [
+      Actions\CreateAction::make(),
+    ];
+  }
+
+  protected function getTableRecordUrlUsing(): ?Closure
+  {
+    return null;
+  }
 }
