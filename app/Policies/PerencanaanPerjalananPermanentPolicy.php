@@ -13,7 +13,7 @@ class PerencanaanPerjalananPermanentPolicy
    */
   public function viewAny(User $user): bool
   {
-    return $user->isAdmin() || $user->isLeader() || $user->isSesm() || $user->isSpg();
+    return $user->isAdmin() || $user->isLeader() || $user->isSesm();
   }
 
   /**

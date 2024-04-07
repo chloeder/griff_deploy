@@ -108,6 +108,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
               ->label('Sales')
               ->options(fn (Get $get): Collection => Sales::query()
                 ->join('users', 'users.id', '=', 'sales.user_id')
+                ->where('users.role', 'SE/SM')
                 ->where('klaster_id', $get('klaster_id'))
                 ->pluck('username', 'user_id'))
               ->afterStateUpdated(function (Set $set) {
