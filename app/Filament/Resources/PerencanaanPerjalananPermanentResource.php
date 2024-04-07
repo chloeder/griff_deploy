@@ -156,7 +156,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
   {
     return $table
       ->modifyQueryUsing(function (Builder $query) {
-        if (auth()->user()->role !== 'Admin' || auth()->user()->role === 'Leader') {
+        if (auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG') {
           $query->where('sales_id', auth()->user()->id);
         }
       })
@@ -255,15 +255,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
           Tables\Actions\EditAction::make(),
           Tables\Actions\DeleteAction::make(),
           Tables\Actions\Action::make('Edit Status')
-            ->hidden(function ($record) {
-              if (Auth::user()->role === 'Leader' && $record->user->role === 'Leader') {
-                return true;
-              } elseif (Auth::user()->role === 'SE/SM' && $record->user->role === 'SE/SM') {
-                return true;
-              } elseif (Auth::user()->role === 'SPG' && $record->user->role === 'SPG') {
-                return true;
-              }
-            })
+            ->hidden(Auth::user()->role !== 'Admin' && Auth::user()->role !== 'Leader')
             ->icon('heroicon-o-pencil')
             ->action(function (PerencanaanPerjalananPermanent $record, array $data): void {
               $record->status = $data['status'];

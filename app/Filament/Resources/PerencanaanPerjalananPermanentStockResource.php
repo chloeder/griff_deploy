@@ -267,15 +267,7 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
           Tables\Actions\EditAction::make()->openUrlInNewTab(),
           Tables\Actions\DeleteAction::make(),
           Tables\Actions\Action::make('Edit Status')
-            ->hidden(function ($record) {
-              if (Auth::user()->role === 'Leader' && $record->user->role === 'Leader') {
-                return true;
-              } elseif (Auth::user()->role === 'SE/SM' && $record->user->role === 'SE/SM') {
-                return true;
-              } elseif (Auth::user()->role === 'SPG' && $record->user->role === 'SPG') {
-                return true;
-              }
-            })
+            ->hidden(Auth::user()->role !== 'Admin' && Auth::user()->role !== 'Leader')
             ->icon('heroicon-o-pencil')
             ->action(function (PerencanaanPerjalananPermanentStock $record, array $data): void {
               $record->status = $data['status'];
