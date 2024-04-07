@@ -57,7 +57,9 @@ class LaporanOmset extends Page implements HasTable
         ]),
       ])
       ->modifyQueryUsing(function (Builder $query) {
-        $query->where('omset_po', '>', 0)->where('pjp_status', 'VISIT');
+        if (auth()->user()->role === 'SPG' || auth()->user()->role === 'SE/SM') {
+          $query->where('sales_id', auth()->user()->id)->where('omset_po', '>', 0)->where('pjp_status', 'VISIT');
+        }
       })
       ->poll('10s')
       ->query(PerencanaanPerjalananPermanent::query())
