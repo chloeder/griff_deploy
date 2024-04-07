@@ -33,7 +33,7 @@ class LaporanStock extends Page implements HasTable
     return $table
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'SPG') {
-          $query->where('sales_id', auth()->user()->id)->where('omset_po', '>', 0)->where('pjp_status', 'VISIT');
+          $query->where('sales_id', auth()->user()->id)->where('pjp_status', 'VISIT');
         }
       })
       ->poll('10s')
