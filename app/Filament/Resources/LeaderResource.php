@@ -36,7 +36,6 @@ class LeaderResource extends Resource
               ->label('Leader')
               ->unique()
               ->required()
-              ->minLength(7)
               ->live(onBlur: true)
               ->afterStateUpdated(fn (Set $set, ?string $state) => $set('nama', strtoupper($state))),
             Forms\Components\Select::make('user_id')
