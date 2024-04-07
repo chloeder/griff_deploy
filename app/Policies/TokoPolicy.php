@@ -29,7 +29,7 @@ class TokoPolicy
    */
   public function create(User $user): bool
   {
-    return $user->isAdmin() || $user->isLeader() || $user->isSesm();
+    return $user->isAdmin() || $user->isLeader();
   }
 
   /**
@@ -37,7 +37,7 @@ class TokoPolicy
    */
   public function update(User $user, Toko $toko): bool
   {
-    return $user->isAdmin() || $user->isLeader() || $user->isSesm();
+    return $user->isAdmin() || $user->isLeader();
   }
 
   /**
@@ -45,7 +45,7 @@ class TokoPolicy
    */
   public function delete(User $user, Toko $toko): bool
   {
-    return $user->isAdmin() || $user->isLeader() || $user->isSesm();
+    return $user->isAdmin() || $user->isLeader();
   }
 
   /**
@@ -53,7 +53,7 @@ class TokoPolicy
    */
   public function restore(User $user, Toko $toko): bool
   {
-    return $user->isAdmin() || $user->isLeader() || $user->isSesm();
+    return $user->isAdmin() || $user->isLeader();
   }
 
   /**
@@ -61,6 +61,6 @@ class TokoPolicy
    */
   public function forceDelete(User $user, Toko $toko): bool
   {
-    return $user->isAdmin() || $user->isLeader() || $user->isSesm();
+    return $user->isAdmin() || $user->isLeader();
   }
 }

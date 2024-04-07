@@ -23,6 +23,7 @@ return new class extends Migration
       $table->string('tanggal')->nullable();
       $table->bigInteger('omset_po')->default(0)->nullable();
       $table->string('alasan')->nullable();
+      $table->string('status')->default('Pending')->nullable();
       $table->string('pjp_status');
       $table->timestamps();
     });

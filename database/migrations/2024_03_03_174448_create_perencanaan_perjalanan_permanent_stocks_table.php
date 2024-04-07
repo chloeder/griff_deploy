@@ -22,6 +22,7 @@ return new class extends Migration
       $table->foreignId('toko_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
       $table->string('tanggal')->nullable();
       $table->bigInteger('sell_stocks')->default(0)->nullable();
+      $table->string('status')->default('Pending')->nullable();
       $table->string('pjp_status')->default('PLAN');
       $table->timestamps();
     });

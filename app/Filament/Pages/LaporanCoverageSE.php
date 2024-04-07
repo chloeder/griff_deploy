@@ -37,6 +37,7 @@ class LaporanCoverageSE extends Page implements HasTable
     return $table
       ->modifyQueryUsing(function (Builder $query) {
         $query->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')->join('tokos', 'tokos.id', '=', 'perencanaan_perjalanan_permanents.toko_id')->where('role', 'SE/SM')->groupBy('toko_id');
+        // dd($data);
       })
       ->poll('10s')
       ->query(PerencanaanPerjalananPermanent::query())
@@ -54,32 +55,56 @@ class LaporanCoverageSE extends Page implements HasTable
           ->label('Sales')
           ->searchable()
           ->sortable(),
-        TextColumn::make('toko.nama')
-          ->searchable()
-          ->sortable(),
-        TextColumn::make('toko.tipe_toko')
-          ->label('Tipe Toko')
-          ->searchable()
-          ->sortable(),
         TextColumn::make('plan')
           ->label('PLAN')
-          ->state(function (PerencanaanPerjalananPermanent $record): string {
-            return $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')->where('role', 'SE/SM')->where('pjp_status', 'PLAN')->whereMonth('tanggal', now()->month)->whereYear('tanggal', now()->year)->count();
+          ->state(function ($record): string {
+            $specificSalesId = $record->sales_id;
+            return $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
+              ->where('perencanaan_perjalanan_permanents.sales_id', $specificSalesId)
+              ->where(function ($query) {
+                $query->where('pjp_status', 'PLAN')
+                  ->orWhere('pjp_status', 'VISIT');
+              })
+              ->whereMonth('tanggal', now()->month)
+              ->whereYear('tanggal', now()->year)
+              ->count();
+
+            // $record->where('pjp_status', 'PLAN')->orWhere('pjp_status', 'VISIT')->whereMonth('tanggal', now()->month)->whereYear('tanggal', now()->year)->count();
+            // dd($data);
           }),
         TextColumn::make('visit')
           ->label('VISIT')
           ->state(function (PerencanaanPerjalananPermanent $record): string {
-            return $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')->where('role', 'SE/SM')->where('pjp_status', 'VISIT')->whereMonth('tanggal', now()->month)->whereYear('tanggal', now()->year)->count();
+            $specificSalesId = $record->sales_id;
+            return $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
+              ->where('perencanaan_perjalanan_permanents.sales_id', $specificSalesId)
+              ->where(function ($query) {
+                $query->where('pjp_status', 'VISIT');
+              })
+              ->whereMonth('tanggal', now()->month)
+              ->whereYear('tanggal', now()->year)
+              ->count();
           }),
         TextColumn::make('ec')
           ->label('EC')
           ->state(function (PerencanaanPerjalananPermanent $record): string {
-            return $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')->where('role', 'SE/SM')->where('pjp_status', 'VISIT')->whereMonth('tanggal', now()->month)->whereYear('tanggal', now()->year)->where('pjp_status', 'VISIT')->count();
+            $specificSalesId = $record->sales_id;
+            return $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
+              ->where('perencanaan_perjalanan_permanents.sales_id', $specificSalesId)
+              ->where('pjp_status', 'VISIT')
+              ->whereMonth('tanggal', now()->month)
+              ->whereYear('tanggal', now()->year)
+              ->count();
           }),
         TextColumn::make('oa')
           ->label('OA')
           ->state(function (PerencanaanPerjalananPermanent $record): string {
-            $data = $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')->where('role', 'SE/SM')->where('pjp_status', 'VISIT')->whereMonth('tanggal', now()->month)->count();
+            $specificSalesId = $record->sales_id;
+            $data = $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
+              ->where('perencanaan_perjalanan_permanents.sales_id', $specificSalesId)
+              ->where('role', 'SE/SM')
+              ->where('pjp_status', 'VISIT')
+              ->whereMonth('tanggal', now()->month)->count();
             return $data >= 1 ? 1 : 0;
           }),
       ])

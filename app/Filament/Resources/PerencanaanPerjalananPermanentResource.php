@@ -182,13 +182,8 @@ class PerencanaanPerjalananPermanentResource extends Resource
         Tables\Columns\TextColumn::make('toko.nama')
           ->searchable()
           ->sortable(),
-        // Tables\Columns\TextInputColumn::make('diskon_total')
-        //   ->default(0),
         Tables\Columns\TextColumn::make('omset_po')
           ->url(fn (PerencanaanPerjalananPermanent $record): string => route('transaksi-produk', ['id' => $record->id]))
-          // ->state(function (Model $record) {
-          //   return $record->omset_po - ($record->omset_po * $record->diskon_total / 100);
-          // })
           ->badge()
           ->prefix('Rp. ')
           ->numeric(locale: 'id')
@@ -212,7 +207,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
             'VISIT' => 'success',
           })
           ->state(function (PerencanaanPerjalananPermanent $record): string {
-            if ($record->omset_po !== 0 || $record->alasan !== null) {
+            if ($record->status === 'Disetujui') {
               $record->update(['pjp_status' => 'VISIT']);
               return $record->pjp_status;
             } else {
@@ -221,6 +216,16 @@ class PerencanaanPerjalananPermanentResource extends Resource
             }
           })
           ->label('PJP Status')
+          ->searchable()
+          ->sortable(),
+        Tables\Columns\TextColumn::make('status')
+          ->badge()
+          ->color(fn (string $state): string => match ($state) {
+            'Pending' => 'warning',
+            'Disetujui' => 'success',
+            'Ditolak' => 'danger',
+          })
+          ->label('Status')
           ->searchable()
           ->sortable(),
       ])
@@ -248,6 +253,44 @@ class PerencanaanPerjalananPermanentResource extends Resource
         ActionGroup::make([
           Tables\Actions\EditAction::make(),
           Tables\Actions\DeleteAction::make(),
+          Tables\Actions\Action::make('Edit Status')
+            ->hidden(function ($record) {
+              if (Auth::user()->role === 'Leader' && $record->user->role === 'Leader') {
+                return true;
+              } elseif (Auth::user()->role === 'SE/SM' && $record->user->role === 'SE/SM') {
+                return true;
+              } elseif (Auth::user()->role === 'SPG' && $record->user->role === 'SPG') {
+                return true;
+              }
+            })
+            ->icon('heroicon-o-pencil')
+            ->action(function (PerencanaanPerjalananPermanent $record, array $data): void {
+              $record->status = $data['status'];
+              $record->save();
+
+              if ($record->status === 'Ditolak') {
+                $record->delete();
+                Notification::make()
+                  ->title('PJP Berhasil Ditolak')
+                  ->success()
+                  ->send();
+                return;
+              }
+
+              Notification::make()
+                ->title('PJP Berhasil Disetujui')
+                ->success()
+                ->send();
+            })
+            ->form([
+              Select::make('status')
+                ->options([
+                  'Disetujui' => 'Setujui',
+                  'Ditolak' => 'Tolak',
+                ])
+                ->searchable()
+
+            ]),
         ])
       ])
       ->bulkActions([

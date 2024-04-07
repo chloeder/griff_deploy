@@ -24,6 +24,7 @@ use App\Filament\Resources\PerencanaanPerjalananPermanentStockResource\Pages;
 use App\Filament\Resources\PerencanaanPerjalananPermanentStockResource\RelationManagers;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Collection;
@@ -218,7 +219,7 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
             'VISIT' => 'success',
           })
           ->state(function (PerencanaanPerjalananPermanentStock $record): string {
-            if ($record->sell_stocks > 0 && $record->sell_stocks !== null) {
+            if ($record->status === 'Disetujui') {
               $record->update(['pjp_status' => 'VISIT']);
               return $record->pjp_status;
             } else {
@@ -229,6 +230,17 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
           ->label('PJP Status')
           ->searchable()
           ->sortable(),
+        Tables\Columns\TextColumn::make('status')
+          ->badge()
+          ->color(fn (string $state): string => match ($state) {
+            'Pending' => 'warning',
+            'Disetujui' => 'success',
+            'Ditolak' => 'danger',
+          })
+          ->label('Status')
+          ->searchable()
+          ->sortable(),
+
       ])
       ->filters([
         Filter::make('tanggal')
@@ -254,7 +266,44 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
         ActionGroup::make([
           Tables\Actions\EditAction::make()->openUrlInNewTab(),
           Tables\Actions\DeleteAction::make(),
-          Tables\Actions\ViewAction::make(),
+          Tables\Actions\Action::make('Edit Status')
+            ->hidden(function ($record) {
+              if (Auth::user()->role === 'Leader' && $record->user->role === 'Leader') {
+                return true;
+              } elseif (Auth::user()->role === 'SE/SM' && $record->user->role === 'SE/SM') {
+                return true;
+              } elseif (Auth::user()->role === 'SPG' && $record->user->role === 'SPG') {
+                return true;
+              }
+            })
+            ->icon('heroicon-o-pencil')
+            ->action(function (PerencanaanPerjalananPermanentStock $record, array $data): void {
+              $record->status = $data['status'];
+              $record->save();
+
+              if ($record->status === 'Ditolak') {
+                $record->delete();
+                Notification::make()
+                  ->title('PJP Berhasil Ditolak')
+                  ->success()
+                  ->send();
+                return;
+              }
+
+              Notification::make()
+                ->title('PJP Berhasil Disetujui')
+                ->success()
+                ->send();
+            })
+            ->form([
+              Select::make('status')
+                ->options([
+                  'Disetujui' => 'Setujui',
+                  'Ditolak' => 'Tolak',
+                ])
+                ->searchable()
+
+            ]),
         ])
       ])
       ->bulkActions([
