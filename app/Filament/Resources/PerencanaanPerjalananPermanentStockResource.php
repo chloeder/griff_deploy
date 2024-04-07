@@ -144,6 +144,11 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
   public static function table(Table $table): Table
   {
     return $table
+      ->modifyQueryUsing(function (Builder $query) {
+        if (auth()->user()->role === 'SPG') {
+          $query->where('sales_id', auth()->user()->id);
+        }
+      })
       ->poll('10s')
       ->columns([
         Tables\Columns\TextColumn::make('id')
