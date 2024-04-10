@@ -140,6 +140,7 @@ class TokoResource extends Resource
   public static function table(Table $table): Table
   {
     return $table
+      ->recordUrl(null)
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG') {
           $query->where('sales_marketing_id', auth()->user()->id)->orWhere('sales_promotion_id', auth()->user()->id);

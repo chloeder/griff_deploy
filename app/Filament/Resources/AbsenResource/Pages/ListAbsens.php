@@ -17,9 +17,4 @@ class ListAbsens extends ListRecords
       Actions\CreateAction::make(),
     ];
   }
-
-  protected function getTableRecordUrlUsing(): ?Closure
-  {
-    return null;
-  }
 }

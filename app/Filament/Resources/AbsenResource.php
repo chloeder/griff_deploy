@@ -96,6 +96,7 @@ class AbsenResource extends Resource
   public static function table(Table $table): Table
   {
     return $table
+      ->recordUrl(null)
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG') {
           $query->where('user_id', auth()->user()->id);

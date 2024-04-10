@@ -37,7 +37,7 @@ class AbsenPolicy
    */
   public function update(User $user, Absen $absen): bool
   {
-    return $user->isAdmin() || $user->isLeader() || $user->isSesm() || $user->isSpg();
+    return $user->isAdmin() || $user->isLeader();
   }
 
   /**

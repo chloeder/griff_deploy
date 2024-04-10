@@ -12,7 +12,9 @@ class EditAbsen extends EditRecord
   protected static string $resource = AbsenResource::class;
   protected function mutateFormDataBeforeSave(array $data): array
   {
-    
+    // dd($data["tanggal_keluar"]);
+
+
     $data['tanggal_keluar'] = Carbon::now()->format('Y-m-d');
     $data['waktu_keluar'] = Carbon::now()->format('H:i:s');
     $data['status_absen'] = 'Proses';

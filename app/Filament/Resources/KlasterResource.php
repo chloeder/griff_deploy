@@ -52,6 +52,7 @@ class KlasterResource extends Resource
   public static function table(Table $table): Table
   {
     return $table
+      ->recordUrl(null)
       ->columns([
         Tables\Columns\TextColumn::make('id')
           ->label('No')
