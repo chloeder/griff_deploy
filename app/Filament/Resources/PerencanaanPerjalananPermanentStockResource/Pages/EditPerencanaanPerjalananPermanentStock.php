@@ -9,6 +9,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditPerencanaanPerjalananPermanentStock extends EditRecord
 {
   protected static string $resource = PerencanaanPerjalananPermanentStockResource::class;
+  protected static ?string $title = 'Ubah PJP Stock';
 
   protected function getHeaderActions(): array
   {

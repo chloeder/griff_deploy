@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 class CreatePerencanaanPerjalananPermanent extends CreateRecord
 {
   protected static bool $canCreateAnother = false;
-
+  protected static ?string $title = 'Buat PJP Omset';
   protected static string $resource = PerencanaanPerjalananPermanentResource::class;
 
   protected function handleRecordCreation(array $data): Model

@@ -17,6 +17,8 @@ use App\Models\TransaksiProduk;
 class EditPerencanaanPerjalananPermanent extends EditRecord
 {
   protected static string $resource = PerencanaanPerjalananPermanentResource::class;
+  protected static ?string $title = 'Ubah PJP Omset';
+
 
   protected function handleRecordUpdate(Model $record, array $data): Model
   {

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 class CreatePerencanaanPerjalananPermanentStock extends CreateRecord
 {
   protected static bool $canCreateAnother = false;
+  protected static ?string $title = 'Buat PJP Stock';
 
   protected static string $resource = PerencanaanPerjalananPermanentStockResource::class;
 
