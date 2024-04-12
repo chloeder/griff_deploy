@@ -14,6 +14,8 @@ class ListTransaksiProduk extends Page
 {
   public $pjpId, $diskon_total;
   protected static ?string $navigationIcon = 'heroicon-o-document-text';
+  protected static ?string $title = 'Transaksi PO';
+
   protected static string $view = 'filament.pages.list-transaksi-produk';
   protected static bool $shouldRegisterNavigation = false;
   public function mount($id)

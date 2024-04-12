@@ -10,6 +10,8 @@ class ListTransaksiStock extends Page
 {
   public $pjpId;
   protected static ?string $navigationIcon = 'heroicon-o-document-text';
+  protected static ?string $title = 'Transaksi Stock';
+
   protected static string $view = 'filament.pages.list-transaksi-stock';
   protected static bool $shouldRegisterNavigation = false;
   public function mount($id)
