@@ -34,6 +34,8 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
   protected static ?string $model = PerencanaanPerjalananPermanentStock::class;
 
   protected static ?string $navigationLabel = 'PJP Stock';
+  protected static ?string $pluralModelLabel = 'PJP Stock';
+
   protected static ?string $title = 'PJP Stock';
   protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
   protected static ?string $navigationGroup = 'Aksi';

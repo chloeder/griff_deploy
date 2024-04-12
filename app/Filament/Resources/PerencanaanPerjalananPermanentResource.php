@@ -41,6 +41,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
 
   protected static ?string $model = PerencanaanPerjalananPermanent::class;
   protected static ?string $navigationLabel = 'PJP Omset';
+  protected static ?string $pluralModelLabel = 'PJP Omset';
   protected static ?string $title = 'PJP Omset';
   protected static ?string $navigationIcon = 'heroicon-o-truck';
   protected static ?string $navigationGroup = 'Aksi';
