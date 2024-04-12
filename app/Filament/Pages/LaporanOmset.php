@@ -117,7 +117,6 @@ class LaporanOmset extends Page implements HasTable
           ->sortable()
           ->summarize(Sum::make()
             ->label('Total Nilai')
-            ->prefix('Rp. ')
             ->numeric(locale: 'id')),
         TextColumn::make('tanggal')
           ->searchable()
