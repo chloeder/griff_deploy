@@ -31,12 +31,12 @@ class ListTransaksiProduk extends Page
     ];
   }
 
-  protected function getHeaderWidgets(): array
-  {
-    return [
-      FormTransaksiProdukWidget::make([
-        'pjpId' => $this->pjpId,
-      ]),
-    ];
-  }
+  // protected function getHeaderWidgets(): array
+  // {
+  //   return [
+  //     FormTransaksiProdukWidget::make([
+  //       'pjpId' => $this->pjpId,
+  //     ]),
+  //   ];
+  // }
 }

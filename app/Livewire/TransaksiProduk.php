@@ -6,6 +6,7 @@ use App\Models\PerencanaanPerjalananPermanent;
 use Livewire\Component;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Support\RawJs;
 use Filament\Tables\Columns\Summarizers\Average;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
@@ -73,17 +74,18 @@ class TransaksiProduk extends Component implements HasTable, HasForms
           ->summarize(Sum::make()->label('Total Nilai')->money('Rp.'))
           ->sortable(),
         TextInputColumn::make('diskon')
-          ->label('Diskon Barang'),
-        TextColumn::make('diskon_total')
-          ->label('Diskon Total')
-          ->formatStateUsing(function ($state) {
-            return $state . '%';
-          })
-          ->summarize(Average::make()
-            ->label('Diskon Total')
-            ->formatStateUsing(function ($state) {
-              return $state . '%';
-            })),
+          ->label('Diskon')
+          ->placeholder('Contoh : 30'),
+        // TextColumn::make('diskon_total')
+        //   ->label('Diskon Total')
+        //   ->formatStateUsing(function ($state) {
+        //     return $state . '%';
+        //   })
+        //   ->summarize(Average::make()
+        //     ->label('Diskon Total')
+        //     ->formatStateUsing(function ($state) {
+        //       return $state . '%';
+        //     })),
         TextColumn::make('omset_po')
           ->label('Omset PO')
           ->state(function ($record): float {

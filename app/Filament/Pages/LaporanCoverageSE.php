@@ -91,7 +91,10 @@ class LaporanCoverageSE extends Page implements HasTable
             $specificSalesId = $record->sales_id;
             return $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
               ->where('perencanaan_perjalanan_permanents.sales_id', $specificSalesId)
-              ->where('pjp_status', 'VISIT')
+              ->where(function ($query) {
+                $query->where('pjp_status', 'VISIT');
+                $query->where('omset_po', '>', 0);
+              })
               ->whereMonth('tanggal', now()->month)
               ->whereYear('tanggal', now()->year)
               ->count();
