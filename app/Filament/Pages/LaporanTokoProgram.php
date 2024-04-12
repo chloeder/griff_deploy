@@ -29,13 +29,14 @@ class LaporanTokoProgram extends Page implements HasTable
 {
   use InteractsWithTable;
   protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
-  protected static ?string $navigationLabel = 'Toko Program';
+  protected static ?string $navigationLabel = 'Omset Program';
+  protected static ?string $title = 'Laporan Omset Program';
   protected static ?int $navigationSort = 13;
   protected static ?string $navigationGroup = 'Laporan';
   protected static string $view = 'filament.pages.laporan-toko-program';
   public static function canAccess(): bool
   {
-    return auth()->user()->role === 'Admin' || auth()->user()->role === 'Leader';
+    return auth()->user()->role === 'Admin' || auth()->user()->role === 'Leader' || auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG';
   }
   public function table(Table $table): Table
   {
@@ -103,7 +104,8 @@ class LaporanTokoProgram extends Page implements HasTable
             return $record->join('perencanaan_perjalanan_permanents', 'perencanaan_perjalanan_permanents.toko_id', '=', 'program_tokos.toko_id')->where('program_tokos.toko_id', $record->toko_id)->sum('omset_po');
           })
           ->label('Omset Sistem')
-          ->money('Rp.')
+          ->prefix('Rp. ')
+          ->numeric(locale: 'id')
           ->searchable()
           ->sortable(),
         TextInputColumn::make('omset_faktur')

@@ -109,7 +109,8 @@ class ProgramTokoResource extends Resource
           ->searchable()
           ->sortable(),
         Tables\Columns\TextColumn::make('sewa_target')
-          ->money('Rp.')
+          ->prefix('Rp. ')
+          ->numeric(locale: 'id')
           ->searchable()
           ->sortable(),
         Tables\Columns\TextColumn::make('cashback')
@@ -117,7 +118,8 @@ class ProgramTokoResource extends Resource
           ->searchable()
           ->sortable(),
         Tables\Columns\TextColumn::make('cashback_target')
-          ->money('Rp.')
+          ->prefix('Rp. ')
+          ->numeric(locale: 'id')
           ->searchable()
           ->sortable(),
       ])

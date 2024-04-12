@@ -28,7 +28,7 @@ class LaporanCoverageSPG extends Page implements HasTable
   protected static string $view = 'filament.pages.laporan-coverage-s-p-g';
   public static function canAccess(): bool
   {
-    return auth()->user()->role === 'Admin' || auth()->user()->role === 'Leader';
+    return auth()->user()->role === 'Admin' || auth()->user()->role === 'Leader' || auth()->user()->role === 'SPG';
   }
 
   public function table(Table $table): Table

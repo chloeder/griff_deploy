@@ -25,7 +25,8 @@ class LaporanOmset extends Page implements HasTable
   use InteractsWithTable;
 
   protected static ?string $navigationIcon = 'heroicon-o-chart-bar-square';
-  protected static ?string $navigationLabel = 'Omset';
+  protected static ?string $navigationLabel = 'Omset All';
+  protected static ?string $title = 'Laporan Omset All';
   protected static ?string $navigationGroup = 'Laporan';
   protected static ?int $navigationSort = 12;
   protected static string $view = 'filament.pages.laporan-omset';
@@ -116,7 +117,8 @@ class LaporanOmset extends Page implements HasTable
           ->sortable()
           ->summarize(Sum::make()
             ->label('Total Nilai')
-            ->money('Rp.')),
+            ->prefix('Rp. ')
+            ->numeric(locale: 'id')),
         TextColumn::make('tanggal')
           ->searchable()
           ->sortable(),
