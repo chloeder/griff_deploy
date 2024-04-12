@@ -37,7 +37,7 @@ class LaporanCoverageSPG extends Page implements HasTable
     DB::reconnect();
     return $table
       ->modifyQueryUsing(function (Builder $query) {
-        $query->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')->where('role', 'SPG')->groupBy('toko_id');
+        $query->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')->where('role', 'SPG')->groupBy('sales_id');
       })
       ->poll('10s')
       ->query(PerencanaanPerjalananPermanentStock::query())
