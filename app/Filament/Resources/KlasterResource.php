@@ -35,10 +35,10 @@ class KlasterResource extends Resource
               ->relationship('leader', 'nama')
               ->searchable()
               ->preload(),
-            Forms\Components\TextInput::make('area')
-              ->required()
-              ->live(onBlur: true)
-              ->afterStateUpdated(fn (Set $set, ?string $state) => $set('area', strtoupper($state))),
+            // Forms\Components\TextInput::make('area')
+            //   ->required()
+            //   ->live(onBlur: true)
+            //   ->afterStateUpdated(fn (Set $set, ?string $state) => $set('area', strtoupper($state))),
             Forms\Components\TextInput::make('nama')
               ->label('Klaster')
               ->unique()
@@ -60,8 +60,8 @@ class KlasterResource extends Resource
           ->searchable(),
         Tables\Columns\TextColumn::make('leader.nama')
           ->searchable(),
-        Tables\Columns\TextColumn::make('area')
-          ->searchable(),
+        // Tables\Columns\TextColumn::make('area')
+        //   ->searchable(),
         Tables\Columns\TextColumn::make('nama')
           ->label('Klaster')
           ->searchable(),
