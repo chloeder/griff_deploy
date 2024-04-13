@@ -18,12 +18,16 @@ use Filament\Panel;
 
 
 
-class User extends Authenticatable implements FilamentUser, HasAvatar
+class User extends Authenticatable implements FilamentUser, HasName, HasAvatar
 {
   use HasApiTokens, HasFactory, Notifiable;
   public function canAccessPanel(Panel $panel): bool
   {
     return true;
+  }
+  public function getFilamentName(): string
+  {
+    return $this->username;
   }
   public function getFilamentAvatarUrl(): ?string
   {
