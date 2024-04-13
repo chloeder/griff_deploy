@@ -2,7 +2,7 @@
 
 return [
 
-    /*
+  /*
     |--------------------------------------------------------------------------
     | Broadcasting
     |--------------------------------------------------------------------------
@@ -14,23 +14,23 @@ return [
     |
     */
 
-    'broadcasting' => [
+  'broadcasting' => [
 
-        // 'echo' => [
-        //     'broadcaster' => 'pusher',
-        //     'key' => env('VITE_PUSHER_APP_KEY'),
-        //     'cluster' => env('VITE_PUSHER_APP_CLUSTER'),
-        //     'wsHost' => env('VITE_PUSHER_HOST'),
-        //     'wsPort' => env('VITE_PUSHER_PORT'),
-        //     'wssPort' => env('VITE_PUSHER_PORT'),
-        //     'authEndpoint' => '/api/v1/broadcasting/auth',
-        //     'disableStats' => true,
-        //     'encrypted' => true,
-        // ],
+    // 'echo' => [
+    //     'broadcaster' => 'pusher',
+    //     'key' => env('VITE_PUSHER_APP_KEY'),
+    //     'cluster' => env('VITE_PUSHER_APP_CLUSTER'),
+    //     'wsHost' => env('VITE_PUSHER_HOST'),
+    //     'wsPort' => env('VITE_PUSHER_PORT'),
+    //     'wssPort' => env('VITE_PUSHER_PORT'),
+    //     'authEndpoint' => '/api/v1/broadcasting/auth',
+    //     'disableStats' => true,
+    //     'encrypted' => true,
+    // ],
 
-    ],
+  ],
 
-    /*
+  /*
     |--------------------------------------------------------------------------
     | Default Filesystem Disk
     |--------------------------------------------------------------------------
@@ -40,9 +40,9 @@ return [
     |
     */
 
-    'default_filesystem_disk' => env('FILAMENT_FILESYSTEM_DISK', 'public'),
+  'default_filesystem_disk' => env('FILAMENT_FILESYSTEM_DISK', 'public'),
 
-    /*
+  /*
     |--------------------------------------------------------------------------
     | Assets Path
     |--------------------------------------------------------------------------
@@ -54,9 +54,9 @@ return [
     |
     */
 
-    'assets_path' => null,
+  'assets_path' => null,
 
-    /*
+  /*
     |--------------------------------------------------------------------------
     | Cache Path
     |--------------------------------------------------------------------------
@@ -68,9 +68,9 @@ return [
     |
     */
 
-    'cache_path' => base_path('bootstrap/cache/filament'),
+  'cache_path' => base_path('bootstrap/cache/filament'),
 
-    /*
+  /*
     |--------------------------------------------------------------------------
     | Livewire Loading Delay
     |--------------------------------------------------------------------------
@@ -83,6 +83,7 @@ return [
     |
     */
 
-    'livewire_loading_delay' => 'default',
+  'livewire_loading_delay' => 'default',
+  'default_avatar_provider' => \Devaslanphp\FilamentAvatar\Core\FilamentUserAvatarProvider::class,
 
 ];

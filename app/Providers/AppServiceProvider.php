@@ -21,6 +21,8 @@ use App\Policies\SubKlasterPolicy;
 use App\Policies\TokoPolicy;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationItem;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

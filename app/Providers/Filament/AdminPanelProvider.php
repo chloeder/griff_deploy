@@ -9,6 +9,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentView;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -24,6 +25,7 @@ class AdminPanelProvider extends PanelProvider
   public function panel(Panel $panel): Panel
   {
     return $panel
+
       ->readOnlyRelationManagersOnResourceViewPagesByDefault(false)
       ->default()
       ->id('admin')
@@ -45,7 +47,7 @@ class AdminPanelProvider extends PanelProvider
       ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
       ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
       ->pages([
-        Pages\Dashboard::class, 
+        Pages\Dashboard::class,
       ])
       ->sidebarCollapsibleOnDesktop()
       ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')

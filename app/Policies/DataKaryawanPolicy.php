@@ -13,7 +13,7 @@ class DataKaryawanPolicy
    */
   public function viewAny(User $user): bool
   {
-    return $user->isAdmin() || $user->isLeader() || $user->isSesm() || $user->isSpg();
+    return $user->isAdmin();
   }
 
   /**
@@ -21,7 +21,7 @@ class DataKaryawanPolicy
    */
   public function view(User $user, DataKaryawan $dataKaryawan): bool
   {
-    return $user->isAdmin() || $user->isLeader() || $user->isSesm() || $user->isSpg();
+    return $user->isAdmin();
   }
 
   /**
@@ -29,7 +29,7 @@ class DataKaryawanPolicy
    */
   public function create(User $user): bool
   {
-    return $user->isAdmin() || $user->isLeader();
+    return $user->isAdmin();
   }
 
   /**
@@ -37,7 +37,7 @@ class DataKaryawanPolicy
    */
   public function update(User $user, DataKaryawan $dataKaryawan): bool
   {
-    return $user->isAdmin() || $user->isLeader();
+    return $user->isAdmin();
   }
 
   /**
@@ -45,7 +45,7 @@ class DataKaryawanPolicy
    */
   public function delete(User $user, DataKaryawan $dataKaryawan): bool
   {
-    return $user->isAdmin() || $user->isLeader();
+    return $user->isAdmin();
   }
 
   /**
@@ -53,7 +53,7 @@ class DataKaryawanPolicy
    */
   public function restore(User $user, DataKaryawan $dataKaryawan): bool
   {
-    return $user->isAdmin() || $user->isLeader();
+    return $user->isAdmin();
   }
 
   /**
@@ -61,6 +61,6 @@ class DataKaryawanPolicy
    */
   public function forceDelete(User $user, DataKaryawan $dataKaryawan): bool
   {
-    return $user->isAdmin() || $user->isLeader();
+    return $user->isAdmin();
   }
 }
