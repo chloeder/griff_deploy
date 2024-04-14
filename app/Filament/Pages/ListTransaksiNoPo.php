@@ -22,7 +22,7 @@ class ListTransaksiNoPo extends Page
   protected function getHeaderActions(): array
   {
     return [
-      Action::make('Kembali')
+      Action::make('Simpan')
         ->url(PerencanaanPerjalananPermanentResource::getUrl('index')),
     ];
   }

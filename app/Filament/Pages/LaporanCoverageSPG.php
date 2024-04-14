@@ -134,7 +134,7 @@ class LaporanCoverageSPG extends Page implements HasTable
       ])
       ->actions([])
       ->bulkActions([
-        ExportBulkAction::make(),
+        // ExportBulkAction::make(),
       ]);
   }
 }

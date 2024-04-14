@@ -64,6 +64,14 @@ class UserResource extends Resource
   public static function table(Table $table): Table
   {
     return $table
+      ->modifyQueryUsing(function (Builder $query) {
+        if (auth()->user()->role === 'Leader') {
+          $word = auth()->user()->username;
+          $pieces = explode(' ', $word, 2);
+          $lastWord = end($pieces);
+          $query->where('username', 'like', '%' . $lastWord . '%')->where('role', '!=', 'Leader');
+        }
+      })
       ->recordUrl(null)
       ->columns([
         Tables\Columns\TextColumn::make('id')
@@ -76,6 +84,7 @@ class UserResource extends Resource
         Tables\Columns\TextColumn::make('username')
           ->searchable()->sortable(),
         Tables\Columns\TextColumn::make('role')
+          ->formatStateUsing(fn (User $record) => strtoupper($record->role))
           ->searchable()->sortable(),
       ])
       ->query(function (User $q) {

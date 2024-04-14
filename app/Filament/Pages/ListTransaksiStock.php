@@ -22,7 +22,7 @@ class ListTransaksiStock extends Page
   protected function getHeaderActions(): array
   {
     return [
-      Action::make('Kembali')
+      Action::make('Simpan')
         ->url(PerencanaanPerjalananPermanentStockResource::getUrl('index')),
     ];
   }

@@ -118,7 +118,6 @@ class LaporanNoPo extends Page implements HasTable
       ])
       ->bulkActions([
         ExportBulkAction::make(),
-        DeleteBulkAction::make(),
       ]);
   }
 }
