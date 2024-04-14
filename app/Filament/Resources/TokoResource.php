@@ -123,8 +123,7 @@ class TokoResource extends Resource
                 ->where('klaster_id', $get('klaster_id'))
                 ->where('users.role', 'se/sm')
                 ->pluck('username', 'user_id'))
-              ->searchable()
-              ->required(),
+              ->searchable(),
             Forms\Components\Select::make('sales_promotion_id')
               ->label('SPG')
               ->options(fn (Get $get): Collection => Sales::query()
