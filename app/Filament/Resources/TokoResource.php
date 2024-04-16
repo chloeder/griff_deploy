@@ -143,6 +143,11 @@ class TokoResource extends Resource
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG') {
           $query->where('sales_marketing_id', auth()->user()->id)->orWhere('sales_promotion_id', auth()->user()->id);
+        } elseif (auth()->user()->role === 'Leader') {
+          $word = auth()->user()->username;
+          $pieces = explode(' ', $word, 2);
+          $lastWord = end($pieces);
+          $query->join('leaders', 'leaders.id', '=', 'tokos.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%');
         }
       })
       ->columns([
