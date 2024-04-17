@@ -45,7 +45,7 @@ class PerencanaanPerjalananPermanentStockPolicy
    */
   public function delete(User $user, PerencanaanPerjalananPermanentStock $perencanaanPerjalananPermanentStock): bool
   {
-    return $user->isAdmin() || $user->isLeader();
+    return $user->isAdmin();
   }
 
   /**
@@ -53,7 +53,7 @@ class PerencanaanPerjalananPermanentStockPolicy
    */
   public function restore(User $user, PerencanaanPerjalananPermanentStock $perencanaanPerjalananPermanentStock): bool
   {
-    return $user->isAdmin() || $user->isLeader();
+    return $user->isAdmin();
   }
 
   /**
@@ -61,6 +61,6 @@ class PerencanaanPerjalananPermanentStockPolicy
    */
   public function forceDelete(User $user, PerencanaanPerjalananPermanentStock $perencanaanPerjalananPermanentStock): bool
   {
-    return $user->isAdmin() || $user->isLeader();
+    return $user->isAdmin();
   }
 }

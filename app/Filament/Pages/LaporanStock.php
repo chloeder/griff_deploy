@@ -34,6 +34,11 @@ class LaporanStock extends Page implements HasTable
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'SPG') {
           $query->where('sales_id', auth()->user()->id)->where('pjp_status', 'VISIT');
+        } elseif (auth()->user()->role === 'Leader') {
+          $word = auth()->user()->username;
+          $pieces = explode(' ', $word, 2);
+          $lastWord = end($pieces);
+          $query->leftJoin('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanent_stocks.leader_id')->select('perencanaan_perjalanan_permanent_stocks.*', 'leaders.nama as leader')->where('pjp_status', 'VISIT')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
         } else {
           $query->where('pjp_status', 'VISIT');
         }
@@ -100,7 +105,7 @@ class LaporanStock extends Page implements HasTable
           ->sortable(),
       ])
       ->filters([
-        Filter::make('created_at')
+        Filter::make('tanggal')
           ->form([
             DatePicker::make('Dari'),
             DatePicker::make('Sampai')
@@ -110,11 +115,11 @@ class LaporanStock extends Page implements HasTable
             return $query
               ->when(
                 $data['Dari'],
-                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '>=', $date),
               )
               ->when(
                 $data['Sampai'],
-                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '<=', $date),
               );
           })
       ])

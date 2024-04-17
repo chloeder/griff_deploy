@@ -109,7 +109,6 @@ class PerencanaanPerjalananPermanentResource extends Resource
               ->label('Sales')
               ->options(fn (Get $get): Collection => Sales::query()
                 ->join('users', 'users.id', '=', 'sales.user_id')
-                ->where('users.role', 'SE/SM')
                 ->where('klaster_id', $get('klaster_id'))
                 ->pluck('username', 'user_id'))
               ->afterStateUpdated(function (Set $set) {
@@ -123,7 +122,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
               ->options(fn (Get $get): Collection => Toko::query()
                 ->where('klaster_id', $get('klaster_id'))
                 ->where('sales_marketing_id', $get('sales_id'))
-                ->Orwhere('sales_promotion_id', $get('sales_id'))
+                ->orWhere('sales_promotion_id', $get('sales_id'))
                 ->pluck('nama', 'id'))
               ->searchable()
               ->required(),
@@ -160,6 +159,12 @@ class PerencanaanPerjalananPermanentResource extends Resource
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG') {
           $query->where('sales_id', auth()->user()->id);
+        } elseif (auth()->user()->role === 'Leader') {
+          $word = auth()->user()->username;
+          $pieces = explode(' ', $word, 2);
+          $lastWord = end($pieces);
+          $query->leftJoin('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanents.leader_id')->select('perencanaan_perjalanan_permanents.*', 'leaders.nama as leader')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
+          // dd($data);
         }
       })
       ->poll('10s')

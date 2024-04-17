@@ -52,6 +52,12 @@ class LaporanNoPo extends Page implements HasTable
         ]),
       ])
       ->modifyQueryUsing(function (Builder $query) {
+        if (auth()->user()->role === 'Leader') {
+          $word = auth()->user()->username;
+          $pieces = explode(' ', $word, 2);
+          $lastWord = end($pieces);
+          $query->leftJoin('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanents.leader_id')->select('perencanaan_perjalanan_permanents.*', 'leaders.nama as leader')->where('pjp_status', 'VISIT')->where('alasan', '!=', null)->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
+        }
         $query->where('pjp_status', 'VISIT')->where('alasan', '!=', null);
       })
       ->poll('10s')
@@ -88,12 +94,13 @@ class LaporanNoPo extends Page implements HasTable
           ->sortable(),
         TextColumn::make('no_po.alasan')
           ->badge()
+          ->color('danger')
           ->label('No PO')
           ->searchable()
           ->sortable(),
       ])
       ->filters([
-        Filter::make('created_at')
+        Filter::make('tanggal')
           ->form([
             DatePicker::make('Dari'),
             DatePicker::make('Sampai')
@@ -103,11 +110,11 @@ class LaporanNoPo extends Page implements HasTable
             return $query
               ->when(
                 $data['Dari'],
-                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '>=', $date),
               )
               ->when(
                 $data['Sampai'],
-                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '<=', $date),
               );
           })
       ])
@@ -116,8 +123,6 @@ class LaporanNoPo extends Page implements HasTable
           ->url(fn (PerencanaanPerjalananPermanent $record): string => route('transaksi-no-po', ['id' => $record->id]))
           ->icon('heroicon-o-eye')
       ])
-      ->bulkActions([
-        ExportBulkAction::make(),
-      ]);
+      ->bulkActions([]);
   }
 }

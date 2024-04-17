@@ -41,9 +41,15 @@ class LaporanTokoProgram extends Page implements HasTable
   public function table(Table $table): Table
   {
     return $table
-      // ->modifyQueryUsing(function (Builder $query) {
-      //   $query->join('perencanaan_perjalanan_permanents', 'perencanaan_perjalanan_permanents.toko_id', '=', 'program_tokos.toko_id');
-      // })
+      ->modifyQueryUsing(function (Builder $query) {
+        if (auth()->user()->role === 'Leader') {
+          $word = auth()->user()->username;
+          $pieces = explode(' ', $word, 2);
+          $lastWord = end($pieces);
+          $query->leftJoin('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->leftJoin('leaders', 'leaders.id', '=', 'tokos.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
+          // dd($data);
+        }
+      })
       ->poll('0s')
       ->query(ProgramToko::query())
       ->columns([
@@ -121,23 +127,23 @@ class LaporanTokoProgram extends Page implements HasTable
           ->sortable()
       ])
       ->filters([
-        Filter::make('created_at')
-          ->form([
-            DatePicker::make('Dari'),
-            DatePicker::make('Sampai')
-              ->default(now()),
-          ])
-          ->query(function (Builder $query, array $data): Builder {
-            return $query
-              ->when(
-                $data['Dari'],
-                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-              )
-              ->when(
-                $data['Sampai'],
-                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-              );
-          })
+        // Filter::make('created_at')
+        //   ->form([
+        //     DatePicker::make('Dari'),
+        //     DatePicker::make('Sampai')
+        //       ->default(now()),
+        //   ])
+        //   ->query(function (Builder $query, array $data): Builder {
+        //     return $query
+        //       ->when(
+        //         $data['Dari'],
+        //         fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+        //       )
+        //       ->when(
+        //         $data['Sampai'],
+        //         fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+        //       );
+        //   })
       ])
       ->actions([])
       ->bulkActions([

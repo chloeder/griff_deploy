@@ -34,7 +34,14 @@ class LaporanAbsen extends Page implements HasTable
     DB::reconnect();
     return $table
       ->modifyQueryUsing(function (Builder $query) {
-        $query->join('users', 'users.id', '=', 'absens.user_id')->where('status_absen', 'Disetujui')->groupBy('absens.user_id');
+        if (auth()->user()->role === 'Leader') {
+          $word = auth()->user()->username;
+          $pieces = explode(' ', $word, 2);
+          $lastWord = end($pieces);
+          $query->leftJoin('users', 'users.id', '=', 'absens.user_id')->where('status_absen', 'Disetujui')->where('users.username', 'like', '%' . $lastWord . '%')->groupBy('absens.user_id');
+        } else {
+          $query->join('users', 'users.id', '=', 'absens.user_id')->where('status_absen', 'Disetujui')->groupBy('absens.user_id');
+        }
       })
       ->poll('10s')
       ->poll('10s')

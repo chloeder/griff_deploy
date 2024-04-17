@@ -147,7 +147,8 @@ class TokoResource extends Resource
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 2);
           $lastWord = end($pieces);
-          $query->join('leaders', 'leaders.id', '=', 'tokos.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%');
+          $query->leftJoin('leaders', 'leaders.id', '=', 'tokos.leader_id')->select('tokos.*', 'leaders.nama as leader')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
+          // dd($data);
         }
       })
       ->columns([

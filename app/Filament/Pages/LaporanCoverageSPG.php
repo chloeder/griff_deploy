@@ -37,7 +37,14 @@ class LaporanCoverageSPG extends Page implements HasTable
     DB::reconnect();
     return $table
       ->modifyQueryUsing(function (Builder $query) {
-        $query->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')->where('role', 'SPG')->groupBy('sales_id');
+        $word = auth()->user()->username;
+        $pieces = explode(' ', $word, 2);
+        $lastWord = end($pieces);
+        if (auth()->user()->role === 'Leader') {
+          $query->leftJoin('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')->leftJoin('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanent_stocks.leader_id')->where('role', 'SPG')->select('perencanaan_perjalanan_permanent_stocks.*', 'leaders.nama as leader')->where('leaders.nama', 'like', '%' . $lastWord . '%')->groupBy('sales_id')->get();
+        } else {
+          $query->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')->where('role', 'SPG')->groupBy('sales_id');
+        }
       })
       ->poll('10s')
       ->query(PerencanaanPerjalananPermanentStock::query())

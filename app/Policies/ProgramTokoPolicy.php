@@ -45,7 +45,7 @@ class ProgramTokoPolicy
    */
   public function delete(User $user, ProgramToko $programToko): bool
   {
-    return $user->isAdmin() || $user->isLeader();
+    return $user->isAdmin();
   }
 
   /**
@@ -53,7 +53,7 @@ class ProgramTokoPolicy
    */
   public function restore(User $user, ProgramToko $programToko): bool
   {
-    return $user->isAdmin() || $user->isLeader();
+    return $user->isAdmin();
   }
 
   /**
@@ -61,6 +61,6 @@ class ProgramTokoPolicy
    */
   public function forceDelete(User $user, ProgramToko $programToko): bool
   {
-    return $user->isAdmin() || $user->isLeader();
+    return $user->isAdmin();
   }
 }

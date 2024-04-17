@@ -36,7 +36,16 @@ class LaporanCoverageSE extends Page implements HasTable
     DB::reconnect();
     return $table
       ->modifyQueryUsing(function (Builder $query) {
-        $query->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')->join('tokos', 'tokos.id', '=', 'perencanaan_perjalanan_permanents.toko_id')->where('role', 'SE/SM')->groupBy('sales_id');
+        if (auth()->user()->role === 'Leader') {
+          $word = auth()->user()->username;
+          $pieces = explode(' ', $word, 2);
+          $lastWord = end($pieces);
+          $query->leftJoin('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')->leftJoin('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanents.leader_id')->where('role', 'SE/SM')->select('perencanaan_perjalanan_permanents.*', 'leaders.nama as leader')->where('leaders.nama', 'like', '%' . $lastWord . '%')->groupBy('sales_id')->get();
+          // dd($data);
+        } else {
+          $query->leftJoin('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')->where('role', 'SE/SM')->groupBy('sales_id');
+        }
+
         // dd($data);
       })
       ->poll('10s')

@@ -45,7 +45,7 @@ class TokoPolicy
    */
   public function delete(User $user, Toko $toko): bool
   {
-    return $user->isAdmin() || $user->isLeader();
+    return $user->isAdmin();
   }
 
   /**
@@ -53,7 +53,7 @@ class TokoPolicy
    */
   public function restore(User $user, Toko $toko): bool
   {
-    return $user->isAdmin() || $user->isLeader();
+    return $user->isAdmin();
   }
 
   /**
@@ -61,6 +61,6 @@ class TokoPolicy
    */
   public function forceDelete(User $user, Toko $toko): bool
   {
-    return $user->isAdmin() || $user->isLeader();
+    return $user->isAdmin();
   }
 }

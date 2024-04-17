@@ -78,6 +78,15 @@ class ProgramTokoResource extends Resource
   public static function table(Table $table): Table
   {
     return $table
+      ->modifyQueryUsing(function (Builder $query) {
+        if (auth()->user()->role === 'Leader') {
+          $word = auth()->user()->username;
+          $pieces = explode(' ', $word, 2);
+          $lastWord = end($pieces);
+          $query->leftJoin('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->leftJoin('leaders', 'leaders.id', '=', 'tokos.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
+          // dd($data);
+        }
+      })
       ->recordUrl(null)
       ->columns([
         Tables\Columns\TextColumn::make('id')

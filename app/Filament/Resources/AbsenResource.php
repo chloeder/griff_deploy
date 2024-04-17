@@ -100,6 +100,12 @@ class AbsenResource extends Resource
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG') {
           $query->where('user_id', auth()->user()->id);
+        } elseif (auth()->user()->role === 'Leader') {
+          $word = auth()->user()->username;
+          $pieces = explode(' ', $word, 2);
+          $lastWord = end($pieces);
+          $query->leftJoin('users', 'users.id', '=', 'absens.user_id')->where('users.username', 'like', '%' . $lastWord . '%')->get();
+          // dd($data);
         }
       })
       ->poll('10s')
@@ -153,7 +159,7 @@ class AbsenResource extends Resource
           ->sortable(),
       ])
       ->filters([
-        Filter::make('created_at')
+        Filter::make('tanggal_absen')
           ->form([
             DatePicker::make('Dari')
               ->default(now()),
@@ -164,11 +170,11 @@ class AbsenResource extends Resource
             return $query
               ->when(
                 $data['Dari'],
-                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                fn (Builder $query, $date): Builder => $query->whereDate('tanggal_absen', '>=', $date),
               )
               ->when(
                 $data['Sampai'],
-                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                fn (Builder $query, $date): Builder => $query->whereDate('tanggal_absen', '<=', $date),
               );
           })
       ])
