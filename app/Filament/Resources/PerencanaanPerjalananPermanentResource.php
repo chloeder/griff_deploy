@@ -22,6 +22,7 @@ use App\Filament\Resources\PerencanaanPerjalananPermanentResource\Pages;
 use App\Filament\Resources\TransaksiProdukResource\Pages\CreateTransaksiProduk;
 use App\Filament\Resources\TransaksiProdukResource\Pages\EditTransaksiProduk;
 use App\Livewire\FormTransaksiProdukWidget;
+use App\Models\Leader;
 use App\Models\Sales;
 use App\Models\Toko;
 use App\Models\TransaksiProduk;
@@ -58,7 +59,17 @@ class PerencanaanPerjalananPermanentResource extends Resource
           ->description('Form ini akan menentukan wilayah toko')
           ->schema([
             Forms\Components\Select::make('leader_id')
-              ->relationship('leader', 'nama')
+              ->options(function () {
+                if (Auth::user()->role === 'Leader') {
+                  return Leader::query()
+                    ->where('user_id', Auth::user()->id)
+                    ->pluck('nama', 'id');
+                } else {
+                  return Leader::query()
+                    ->pluck('nama', 'id');
+                }
+              })
+              ->label('Leader')
               ->searchable()
               ->preload()
               ->live()

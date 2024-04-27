@@ -22,6 +22,7 @@ use App\Models\PerencanaanPerjalananPermanentStock;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PerencanaanPerjalananPermanentStockResource\Pages;
 use App\Filament\Resources\PerencanaanPerjalananPermanentStockResource\RelationManagers;
+use App\Models\Leader;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Notifications\Notification;
@@ -49,7 +50,17 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
           ->description('Form ini akan menentukan wilayah toko')
           ->schema([
             Forms\Components\Select::make('leader_id')
-              ->relationship('leader', 'nama')
+              ->options(function () {
+                if (Auth::user()->role === 'Leader') {
+                  return Leader::query()
+                    ->where('user_id', Auth::user()->id)
+                    ->pluck('nama', 'id');
+                } else {
+                  return Leader::query()
+                    ->pluck('nama', 'id');
+                }
+              })
+              ->label('Leader')
               ->searchable()
               ->preload()
               ->live()

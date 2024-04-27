@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProgramTokoResource\Pages;
 use App\Filament\Resources\ProgramTokoResource\RelationManagers;
 use App\Models\ProgramToko;
+use App\Models\Toko;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
@@ -19,6 +20,7 @@ use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ProgramTokoResource extends Resource
@@ -36,9 +38,19 @@ class ProgramTokoResource extends Resource
           ->description('Form ini digunakan untuk mengatur program toko.')
           ->schema([
             Forms\Components\Select::make('toko_id')
+              ->options(function () {
+                if (Auth::user()->role === 'Leader') {
+                  return Toko::query()
+                    ->join('leaders', 'leaders.id', '=', 'tokos.leader_id')
+                    ->where('leaders.user_id', Auth::user()->id)
+                    ->pluck('tokos.nama', 'tokos.id');
+                  // dd($data);
+                } else {
+                  return Toko::all()->pluck('nama', 'id');
+                }
+              })
               ->label('Toko')
               ->required()
-              ->relationship('toko', 'nama')
               ->searchable()
               ->preload(),
             Forms\Components\Select::make('sewa_display')

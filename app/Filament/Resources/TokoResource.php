@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TokoResource\Pages;
 use App\Filament\Resources\TokoResource\RelationManagers;
 use App\Models\Klaster;
+use App\Models\Leader;
 use App\Models\Sales;
 use App\Models\SubKlaster;
 use App\Models\Toko;
@@ -80,7 +81,17 @@ class TokoResource extends Resource
           ->description('Form ini akan menentukan wilayah toko')
           ->schema([
             Forms\Components\Select::make('leader_id')
-              ->relationship('leader', 'nama')
+              ->options(function () {
+                if (Auth::user()->role === 'Leader') {
+                  return Leader::query()
+                    ->where('user_id', Auth::user()->id)
+                    ->pluck('nama', 'id');
+                } else {
+                  return Leader::query()
+                    ->pluck('nama', 'id');
+                }
+              })
+              ->label('Leader')
               ->searchable()
               ->preload()
               ->live()
