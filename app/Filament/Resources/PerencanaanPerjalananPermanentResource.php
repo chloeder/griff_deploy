@@ -202,7 +202,12 @@ class PerencanaanPerjalananPermanentResource extends Resource
           ->searchable()
           ->sortable(),
         Tables\Columns\TextColumn::make('omset_po')
-          ->url(fn (PerencanaanPerjalananPermanent $record): string => route('transaksi-produk', ['id' => $record->id]))
+          ->url(function (PerencanaanPerjalananPermanent $record) {
+            if ($record->omset_po == null && $record->alasan == null) {
+              return route('transaksi-produk', ['id' => $record->id]);
+            }
+          })
+          ->default('-')
           ->badge()
           ->prefix('Rp. ')
           ->numeric(locale: 'id')
@@ -210,7 +215,11 @@ class PerencanaanPerjalananPermanentResource extends Resource
           ->label('PO')
           ->sortable(),
         Tables\Columns\TextColumn::make('no_po.alasan')
-          ->url(fn (PerencanaanPerjalananPermanent $record): string => route('transaksi-no-po', ['id' => $record->id]))
+          ->url(function (PerencanaanPerjalananPermanent $record) {
+            if ($record->omset_po == null && $record->alasan == null) {
+              return route('transaksi-no-po', ['id' => $record->id]);
+            }
+          })
           ->badge()
           ->color('danger')
           ->label('No-PO')

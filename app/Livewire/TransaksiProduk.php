@@ -26,7 +26,7 @@ class TransaksiProduk extends Component implements HasTable, HasForms
   use InteractsWithTable;
   use InteractsWithForms;
 
-  public $pjpId;
+  public $pjpId, $leaderId;
 
   public function mount($id)
   {

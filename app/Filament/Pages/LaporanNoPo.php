@@ -14,6 +14,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Columns\Column;
@@ -120,6 +121,7 @@ class LaporanNoPo extends Page implements HasTable
       ])
       ->actions([
         Action::make('Lihat')
+          ->hidden(Auth::user()->role !== 'Admin' && Auth::user()->role !== 'Leader')
           ->url(fn (PerencanaanPerjalananPermanent $record): string => route('transaksi-no-po', ['id' => $record->id]))
           ->icon('heroicon-o-eye')
       ])

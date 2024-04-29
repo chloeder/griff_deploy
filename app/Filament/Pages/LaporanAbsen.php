@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Absen;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
@@ -12,6 +13,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class LaporanAbsen extends Page implements HasTable
@@ -43,7 +45,6 @@ class LaporanAbsen extends Page implements HasTable
           $query->join('users', 'users.id', '=', 'absens.user_id')->where('status_absen', 'Disetujui')->groupBy('absens.user_id');
         }
       })
-      ->poll('10s')
       ->poll('10s')
       ->query(Absen::query())
       ->columns([
@@ -110,7 +111,12 @@ class LaporanAbsen extends Page implements HasTable
               );
           })
       ])
-      ->actions([])
+      ->actions([
+        Action::make('Lihat')
+          ->hidden(Auth::user()->role !== 'Admin' && Auth::user()->role !== 'Leader')
+          ->url(fn (Absen $record): string => route('detail-absen', ['id' => $record->user_id]))
+          ->icon('heroicon-o-eye')
+      ])
       ->bulkActions([
         // ExportBulkAction::make(),
       ]);

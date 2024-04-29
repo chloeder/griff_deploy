@@ -206,7 +206,12 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
           ->searchable()
           ->sortable(),
         Tables\Columns\TextColumn::make('stock_sum_nilai_sdm')
-          ->url(fn (PerencanaanPerjalananPermanentStock $record): string => route('transaksi-stock', ['id' => $record->id]))
+          ->url(function (PerencanaanPerjalananPermanentStock $record) {
+            if (Auth::user()->role === 'Admin' || $record->status === 'Pending') {
+              return route('transaksi-stock', ['id' => $record->id]);
+            }
+          })
+          // ->url(fn (PerencanaanPerjalananPermanentStock $record): string => route('transaksi-stock', ['id' => $record->id]))
           ->badge()
           ->color('success')
           ->label('SDM')
@@ -214,7 +219,12 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
           ->prefix('Rp. ')
           ->numeric(locale: 'id')->sortable(),
         Tables\Columns\TextColumn::make('stock_sum_nilai_sdt')
-          ->url(fn (PerencanaanPerjalananPermanentStock $record): string => route('transaksi-stock', ['id' => $record->id]))
+          ->url(function (PerencanaanPerjalananPermanentStock $record) {
+            if (Auth::user()->role === 'Admin' || $record->status === 'Pending') {
+              return route('transaksi-stock', ['id' => $record->id]);
+            }
+          })
+          // ->url(fn (PerencanaanPerjalananPermanentStock $record): string => route('transaksi-stock', ['id' => $record->id]))
           ->badge()
           ->color('success')
           ->label('SDT')
@@ -222,7 +232,12 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
           ->prefix('Rp. ')
           ->numeric(locale: 'id')->sortable(),
         Tables\Columns\TextColumn::make('stock_sum_nilai_sdp')
-          ->url(fn (PerencanaanPerjalananPermanentStock $record): string => route('transaksi-stock', ['id' => $record->id]))
+          ->url(function (PerencanaanPerjalananPermanentStock $record) {
+            if (Auth::user()->role === 'Admin' || $record->status === 'Pending') {
+              return route('transaksi-stock', ['id' => $record->id]);
+            }
+          })
+          // ->url(fn (PerencanaanPerjalananPermanentStock $record): string => route('transaksi-stock', ['id' => $record->id]))
           ->badge()
           ->color('success')
           ->label('SDP')
@@ -230,7 +245,12 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
           ->prefix('Rp. ')
           ->numeric(locale: 'id')->sortable(),
         Tables\Columns\TextColumn::make('stock_sum_nilai_sell_stock')
-          ->url(fn (PerencanaanPerjalananPermanentStock $record): string => route('transaksi-stock', ['id' => $record->id]))
+          ->url(function (PerencanaanPerjalananPermanentStock $record) {
+            if (Auth::user()->role === 'Admin' || $record->status === 'Pending') {
+              return route('transaksi-stock', ['id' => $record->id]);
+            }
+          })
+          // ->url(fn (PerencanaanPerjalananPermanentStock $record): string => route('transaksi-stock', ['id' => $record->id]))
           ->badge()
           ->color('success')
           ->label('SELL STOCK')

@@ -14,6 +14,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
@@ -157,6 +158,7 @@ class LaporanOmset extends Page implements HasTable
       ])
       ->actions([
         Action::make('Lihat')
+          ->hidden(Auth::user()->role !== 'Admin' && Auth::user()->role !== 'Leader')
           ->url(fn (PerencanaanPerjalananPermanent $record): string => route('transaksi-produk', ['id' => $record->id]))
           ->icon('heroicon-o-eye')
       ])

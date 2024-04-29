@@ -19,6 +19,8 @@ use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Actions\DeleteBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use App\Models\PerencanaanPerjalananPermanent;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Concerns\InteractsWithTable;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
@@ -115,14 +117,14 @@ class LaporanTokoProgram extends Page implements HasTable
           ->searchable()
           ->sortable(),
         TextInputColumn::make('omset_faktur')
+          ->disabled(
+            fn (ProgramToko $record): bool => $record->omset_faktur != 0
+          )
           ->afterStateUpdated(function (ProgramToko $record, $state) {
             $record->update([
               'omset_faktur' => $state,
             ]);
           })
-          // ->state(function (ProgramToko $record): string {
-          //   return Str::of($record->omset_faktur)->prepend('Rp. ');
-          // })
           ->mask(RawJs::make('$money($input)'))
           ->sortable()
       ])
@@ -145,7 +147,29 @@ class LaporanTokoProgram extends Page implements HasTable
         //       );
         //   })
       ])
-      ->actions([])
+      ->actions([
+        Action::make('Simpan')
+          ->action(function (ProgramToko $record) {
+            Notification::make()
+              ->title('Omset Faktur Toko ' . $record->toko->nama . ' berhasil disimpan')
+              ->success()
+              ->send();
+          })
+          ->button(),
+        Action::make('Reset')
+          ->action(function (ProgramToko $record) {
+            $record->update([
+              'omset_faktur' => 0,
+            ]);
+
+            Notification::make()
+              ->title('Omset Faktur Toko ' . $record->toko->nama . ' berhasil direset')
+              ->success()
+              ->send();
+          })
+          ->button()
+          ->color('danger'),
+      ])
       ->bulkActions([
         // ExportBulkAction::make(),
       ]);

@@ -13,6 +13,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class LaporanStock extends Page implements HasTable
@@ -126,6 +127,7 @@ class LaporanStock extends Page implements HasTable
       ->actions(
         [
           Action::make('Lihat')
+            ->hidden(Auth::user()->role !== 'Admin' && Auth::user()->role !== 'Leader')
             ->url(fn (PerencanaanPerjalananPermanentStock $record): string => route('transaksi-stock', ['id' => $record->id]))
             ->icon('heroicon-o-eye')
         ]
