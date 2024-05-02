@@ -203,7 +203,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
           ->sortable(),
         Tables\Columns\TextColumn::make('omset_po')
           ->url(function (PerencanaanPerjalananPermanent $record) {
-            if ($record->omset_po == null && $record->alasan == null) {
+            if ($record->alasan == null) {
               return route('transaksi-produk', ['id' => $record->id]);
             }
           })
@@ -216,7 +216,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
           ->sortable(),
         Tables\Columns\TextColumn::make('no_po.alasan')
           ->url(function (PerencanaanPerjalananPermanent $record) {
-            if ($record->omset_po == null && $record->alasan == null) {
+            if ($record->omset_po == null) {
               return route('transaksi-no-po', ['id' => $record->id]);
             }
           })
