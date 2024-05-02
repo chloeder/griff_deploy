@@ -216,7 +216,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
           ->sortable(),
         Tables\Columns\TextColumn::make('no_po.alasan')
           ->url(function (PerencanaanPerjalananPermanent $record) {
-            if ($record->omset_po == null) {
+            if ($record->omset_po == 0) {
               return route('transaksi-no-po', ['id' => $record->id]);
             }
           })
