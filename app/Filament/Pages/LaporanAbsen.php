@@ -58,22 +58,22 @@ class LaporanAbsen extends Page implements HasTable
         TextColumn::make('masuk')
           ->label('Masuk')
           ->state(function (Absen $record): string {
-            return $record->join('users', 'users.id', '=', 'absens.user_id')->where('users.id', $record->user_id)->where('status_absen', 'Disetujui')->where('keterangan_absen', 'Hadir')->whereMonth('tanggal_absen', now()->month)->whereYear('tanggal_absen', now()->year)->count();
+            return $record->join('users', 'users.id', '=', 'absens.user_id')->where('users.id', $record->user_id)->where('status_absen', 'Disetujui')->where('keterangan_absen', 'Hadir')->count();
           }),
         TextColumn::make('alpa')
           ->label('Alpa')
           ->state(function (Absen $record): string {
-            return $record->join('users', 'users.id', '=', 'absens.user_id')->where('users.id', $record->user_id)->where('status_absen', 'Disetujui')->where('keterangan_absen', 'Alpa')->whereMonth('tanggal_absen', now()->month)->whereYear('tanggal_absen', now()->year)->count();
+            return $record->join('users', 'users.id', '=', 'absens.user_id')->where('users.id', $record->user_id)->where('status_absen', 'Disetujui')->where('keterangan_absen', 'Alpa')->count();
           }),
         TextColumn::make('izin')
           ->label('Izin')
           ->state(function (Absen $record): string {
-            return $record->join('users', 'users.id', '=', 'absens.user_id')->where('users.id', $record->user_id)->where('status_absen', 'Disetujui')->where('keterangan_absen', 'Izin')->whereMonth('tanggal_absen', now()->month)->whereYear('tanggal_absen', now()->year)->count();
+            return $record->join('users', 'users.id', '=', 'absens.user_id')->where('users.id', $record->user_id)->where('status_absen', 'Disetujui')->where('keterangan_absen', 'Izin')->count();
           }),
         TextColumn::make('sakit')
           ->label('Sakit')
           ->state(function (Absen $record): string {
-            return $record->join('users', 'users.id', '=', 'absens.user_id')->where('users.id', $record->user_id)->where('status_absen', 'Disetujui')->where('keterangan_absen', 'Sakit')->whereMonth('tanggal_absen', now()->month)->whereYear('tanggal_absen', now()->year)->count();
+            return $record->join('users', 'users.id', '=', 'absens.user_id')->where('users.id', $record->user_id)->where('status_absen', 'Disetujui')->where('keterangan_absen', 'Sakit')->count();
           }),
         TextColumn::make('user.karyawan.no_rek')
           ->label('No. Rekening')
