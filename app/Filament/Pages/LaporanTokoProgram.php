@@ -46,8 +46,8 @@ class LaporanTokoProgram extends Page implements HasTable
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'Leader') {
           $word = auth()->user()->username;
-          $pieces = explode(' ', $word, 2);
-          $lastWord = end($pieces);
+          $pieces = explode(' ', $word, 3);
+          $lastWord = $pieces[0] . ' ' . $pieces[1];
           $query->leftJoin('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->leftJoin('leaders', 'leaders.id', '=', 'tokos.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
           // dd($data);
         }

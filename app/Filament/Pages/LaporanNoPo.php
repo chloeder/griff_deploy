@@ -55,8 +55,8 @@ class LaporanNoPo extends Page implements HasTable
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'Leader') {
           $word = auth()->user()->username;
-          $pieces = explode(' ', $word, 2);
-          $lastWord = end($pieces);
+          $pieces = explode(' ', $word, 3);
+          $lastWord = $pieces[0] . ' ' . $pieces[1];
           $query->leftJoin('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanents.leader_id')->select('perencanaan_perjalanan_permanents.*', 'leaders.nama as leader')->where('pjp_status', 'VISIT')->where('alasan', '!=', null)->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
         }
         $query->where('pjp_status', 'VISIT')->where('alasan', '!=', null);

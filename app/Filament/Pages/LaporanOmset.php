@@ -63,8 +63,8 @@ class LaporanOmset extends Page implements HasTable
           $query->where('sales_id', auth()->user()->id)->where('omset_po', '>', 0)->where('pjp_status', 'VISIT');
         } elseif (auth()->user()->role === 'Leader') {
           $word = auth()->user()->username;
-          $pieces = explode(' ', $word, 2);
-          $lastWord = end($pieces);
+          $pieces = explode(' ', $word, 3);
+          $lastWord = $pieces[0] . ' ' . $pieces[1];
           $query->leftJoin('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanents.leader_id')->select('perencanaan_perjalanan_permanents.*', 'leaders.nama as leader')->where('leaders.nama', 'like', '%' . $lastWord . '%')->where('omset_po', '>', 0)->where('pjp_status', 'VISIT')->get();
         } else {
           $query->where('omset_po', '>', 0)->where('pjp_status', 'VISIT');

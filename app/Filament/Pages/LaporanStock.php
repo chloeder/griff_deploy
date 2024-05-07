@@ -37,8 +37,8 @@ class LaporanStock extends Page implements HasTable
           $query->where('sales_id', auth()->user()->id)->where('pjp_status', 'VISIT');
         } elseif (auth()->user()->role === 'Leader') {
           $word = auth()->user()->username;
-          $pieces = explode(' ', $word, 2);
-          $lastWord = end($pieces);
+          $pieces = explode(' ', $word, 3);
+          $lastWord = $pieces[0] . ' ' . $pieces[1];
           $query->leftJoin('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanent_stocks.leader_id')->select('perencanaan_perjalanan_permanent_stocks.*', 'leaders.nama as leader')->where('pjp_status', 'VISIT')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
         } else {
           $query->where('pjp_status', 'VISIT');

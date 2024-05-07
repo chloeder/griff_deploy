@@ -38,8 +38,8 @@ class LaporanCoverageSPG extends Page implements HasTable
     return $table
       ->modifyQueryUsing(function (Builder $query) {
         $word = auth()->user()->username;
-        $pieces = explode(' ', $word, 2);
-        $lastWord = end($pieces);
+        $pieces = explode(' ', $word, 3);
+        $lastWord = $pieces[0] . ' ' . $pieces[1];
         if (auth()->user()->role === 'Leader') {
           $query->leftJoin('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')->leftJoin('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanent_stocks.leader_id')->where('role', 'SPG')->select('perencanaan_perjalanan_permanent_stocks.*', 'leaders.nama as leader')->where('leaders.nama', 'like', '%' . $lastWord . '%')->groupBy('sales_id')->get();
         } else {

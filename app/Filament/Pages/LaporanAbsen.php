@@ -38,8 +38,8 @@ class LaporanAbsen extends Page implements HasTable
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'Leader') {
           $word = auth()->user()->username;
-          $pieces = explode(' ', $word, 2);
-          $lastWord = end($pieces);
+          $pieces = explode(' ', $word, 3);
+          $lastWord = $pieces[0] . ' ' . $pieces[1];
           $query->leftJoin('users', 'users.id', '=', 'absens.user_id')->where('status_absen', 'Disetujui')->where('users.username', 'like', '%' . $lastWord . '%')->groupBy('absens.user_id');
         } else {
           $query->join('users', 'users.id', '=', 'absens.user_id')->where('status_absen', 'Disetujui')->groupBy('absens.user_id');
