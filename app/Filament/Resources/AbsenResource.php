@@ -102,8 +102,8 @@ class AbsenResource extends Resource
           $query->where('user_id', auth()->user()->id);
         } elseif (auth()->user()->role === 'Leader') {
           $word = auth()->user()->username;
-          $pieces = explode(' ', $word, 2);
-          $lastWord = end($pieces);
+          $pieces = explode(' ', $word, 3);
+          $lastWord = $pieces[0] . ' ' . $pieces[1];
           $query->leftJoin('users', 'users.id', '=', 'absens.user_id')->where('users.username', 'like', '%' . $lastWord . '%')->get();
           // dd($data);
         }

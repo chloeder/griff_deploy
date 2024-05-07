@@ -67,9 +67,10 @@ class UserResource extends Resource
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'Leader') {
           $word = auth()->user()->username;
-          $pieces = explode(' ', $word, 2);
-          $lastWord = end($pieces);
+          $pieces = explode(' ', $word, 3);
+          $lastWord = $pieces[0] . ' ' . $pieces[1];
           $query->where('username', 'like', '%' . $lastWord . '%')->where('role', '!=', 'Leader');
+          // dd($lastWord);
         }
       })
       ->recordUrl(null)

@@ -156,8 +156,8 @@ class TokoResource extends Resource
           $query->where('sales_marketing_id', auth()->user()->id)->orWhere('sales_promotion_id', auth()->user()->id);
         } elseif (auth()->user()->role === 'Leader') {
           $word = auth()->user()->username;
-          $pieces = explode(' ', $word, 2);
-          $lastWord = end($pieces);
+          $pieces = explode(' ', $word, 3);
+          $lastWord = $pieces[0] . ' ' . $pieces[1];
           $query->leftJoin('leaders', 'leaders.id', '=', 'tokos.leader_id')->select('tokos.*', 'leaders.nama as leader')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
           // dd($data);
         }
