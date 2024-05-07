@@ -288,15 +288,20 @@ class PerencanaanPerjalananPermanentResource extends Resource
               $record->status = $data['status'];
               $record->save();
 
-              if ($record->status === 'Ditolak') {
-                $record->delete();
+
+              if ($data['status'] === 'Pending') {
+                $record->update([
+                  'pjp_status' => 'PLAN',
+                  'status' => 'Pending',
+                  'alasan' => null,
+                  'omset_po' => 0,
+                ]);
                 Notification::make()
                   ->title('PJP Berhasil Ditolak')
                   ->success()
                   ->send();
                 return;
               }
-
               Notification::make()
                 ->title('PJP Berhasil Disetujui')
                 ->success()
@@ -306,7 +311,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
               Select::make('status')
                 ->options([
                   'Disetujui' => 'Setujui',
-                  'Ditolak' => 'Tolak',
+                  'Pending' => 'Tolak',
                 ])
                 ->searchable()
 

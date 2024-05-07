@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PerencanaanPerjalananPermanentStockResource\Pages;
 use App\Filament\Resources\PerencanaanPerjalananPermanentStockResource\RelationManagers;
 use App\Models\Leader;
+use App\Models\TransaksiStock;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Notifications\Notification;
@@ -318,8 +319,21 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
               $record->status = $data['status'];
               $record->save();
 
-              if ($record->status === 'Ditolak') {
-                $record->delete();
+              if ($data['status'] === 'Pending') {
+                $record->pjp_status = 'PLAN';
+                $record->sell_stocks = 0;
+
+                TransaksiStock::where('pjp_stock_id', $record->id)->update([
+                  'sdm' => 0,
+                  'sdp' => 0,
+                  'sdt' => 0,
+                  'sell_stock' => 0,
+                  'nilai_sdm' => 0,
+                  'nilai_sdp' => 0,
+                  'nilai_sdt' => 0,
+                  'nilai_sell_stock' => 0
+                ]);
+
                 Notification::make()
                   ->title('PJP Berhasil Ditolak')
                   ->success()
@@ -336,7 +350,7 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
               Select::make('status')
                 ->options([
                   'Disetujui' => 'Setujui',
-                  'Ditolak' => 'Tolak',
+                  'Pending' => 'Tolak',
                 ])
                 ->searchable()
 
