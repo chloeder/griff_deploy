@@ -91,7 +91,7 @@ class ProgramTokoResource extends Resource
   {
     return $table
       ->modifyQueryUsing(function (Builder $query) {
-        if (auth()->user()->role === 'Leader') {
+        if (auth()->user()->role === 'Leader' || auth()->user()->role === 'SPG' || auth()->user()->role === 'SE/SM') {
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 2);
           $lastWord = end($pieces);
