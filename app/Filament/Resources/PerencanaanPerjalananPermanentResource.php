@@ -25,6 +25,7 @@ use App\Livewire\FormTransaksiProdukWidget;
 use App\Models\Leader;
 use App\Models\Sales;
 use App\Models\Toko;
+use App\Models\TransaksiNoPo;
 use App\Models\TransaksiProduk;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
@@ -295,6 +296,9 @@ class PerencanaanPerjalananPermanentResource extends Resource
                   'status' => 'Pending',
                   'alasan' => null,
                   'omset_po' => 0,
+                ]);
+                TransaksiNoPo::where('perencanaan_perjalanan_permanent_id', $record->id)->update([
+                  'alasan' => null,
                 ]);
                 Notification::make()
                   ->title('PJP Berhasil Ditolak')
