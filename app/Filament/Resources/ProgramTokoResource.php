@@ -95,7 +95,7 @@ class ProgramTokoResource extends Resource
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 2);
           $lastWord = end($pieces);
-          $query->leftJoin('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->leftJoin('leaders', 'leaders.id', '=', 'tokos.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
+          $query->where('username', 'like', '%' . $lastWord . '%');
           // dd($data);
         }
       })
