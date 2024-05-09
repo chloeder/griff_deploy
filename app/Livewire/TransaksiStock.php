@@ -123,7 +123,7 @@ class TransaksiStock extends Component implements HasTable, HasForms
           ->label('Nilai SELL')
           ->state(function ($record): float {
             $record->update(['nilai_sell_stock' => $record->sell_stock * $record->sku->rbp]);
-            PerencanaanPerjalananPermanentStock::where('id', $record->id)->update(['sell_stocks' => $record->nilai_sell_stock]);
+            PerencanaanPerjalananPermanentStock::find($record->pjp_stock_id)->update(['sell_stocks' => $record->where('pjp_stock_id', $record->pjp_stock_id)->sum('nilai_sell_stock')]);
             return $record->nilai_sell_stock ?? 0;
           })
           ->toggleable(isToggledHiddenByDefault: false)

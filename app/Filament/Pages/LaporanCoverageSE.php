@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
+use function PHPSTORM_META\map;
+
 class LaporanCoverageSE extends Page implements HasTable
 {
   use InteractsWithTable;
@@ -40,13 +42,15 @@ class LaporanCoverageSE extends Page implements HasTable
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
-          $query->leftJoin('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')->leftJoin('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanents.leader_id')->where('role', 'SE/SM')->select('perencanaan_perjalanan_permanents.*', 'leaders.nama as leader')->where('leaders.nama', 'like', '%' . $lastWord . '%')->groupBy('sales_id')->get();
-          // dd($data);
-        } else {
-          $query->leftJoin('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')->where('role', 'SE/SM')->groupBy('sales_id');
-        }
+          $data = $query->select('perencanaan_perjalanan_permanents.*', 'leaders.nama as leader')->join('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanents.leader_id')->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')->where('role', 'SE/SM')->where('leaders.nama', 'like', '%' . $lastWord . '%')->groupBy('sales_id');
 
-        // dd($data);
+          // dd($data->toArray());
+        } elseif (auth()->user()->role === 'SE/SM') {
+          $data = $query->where('sales_id', auth()->user()->id)->groupBy('sales_id');
+        } else {
+          $data = $query->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')->where('role', 'SE/SM')->groupBy('sales_id');
+          // dd($data);
+        }
       })
       ->poll('10s')
       ->query(PerencanaanPerjalananPermanent::query())
@@ -66,58 +70,50 @@ class LaporanCoverageSE extends Page implements HasTable
           ->sortable(),
         TextColumn::make('plan')
           ->label('PLAN')
-          ->state(function ($record): string {
-            $specificSalesId = $record->sales_id;
-            return $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
-              ->where('perencanaan_perjalanan_permanents.sales_id', $specificSalesId)
-              ->where(function ($query) {
-                $query->where('pjp_status', 'PLAN')
-                  ->orWhere('pjp_status', 'VISIT');
-              })
+          ->state(function (PerencanaanPerjalananPermanent $record): string {
+            $data =  $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
+              ->where('role', 'SE/SM')
               ->whereMonth('tanggal', now()->month)
               ->whereYear('tanggal', now()->year)
-              ->count();
-
-            // $record->where('pjp_status', 'PLAN')->orWhere('pjp_status', 'VISIT')->whereMonth('tanggal', now()->month)->whereYear('tanggal', now()->year)->count();
-            // dd($data);
+              ->get();
+            return $data->where('sales_id', $record->sales_id)->count();
           }),
         TextColumn::make('visit')
           ->label('VISIT')
           ->state(function (PerencanaanPerjalananPermanent $record): string {
-            $specificSalesId = $record->sales_id;
-            return $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
-              ->where('perencanaan_perjalanan_permanents.sales_id', $specificSalesId)
-              ->where(function ($query) {
-                $query->where('pjp_status', 'VISIT');
-              })
+            $data = $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
+              ->where('role', 'SE/SM')
+              ->where('pjp_status', 'VISIT')
+              ->where('alasan', null)
               ->whereMonth('tanggal', now()->month)
               ->whereYear('tanggal', now()->year)
-              ->count();
+              ->get();
+            return $data->where('sales_id', $record->sales_id)->count();
           }),
         TextColumn::make('ec')
           ->label('EC')
           ->state(function (PerencanaanPerjalananPermanent $record): string {
-            $specificSalesId = $record->sales_id;
-            return $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
-              ->where('perencanaan_perjalanan_permanents.sales_id', $specificSalesId)
-              ->where(function ($query) {
-                $query->where('pjp_status', 'VISIT');
-                $query->where('omset_po', '>', 0);
-              })
+            $data = $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
+              ->where('role', 'SE/SM')
+              ->where('pjp_status', 'VISIT')
+              ->where('alasan', null)
               ->whereMonth('tanggal', now()->month)
               ->whereYear('tanggal', now()->year)
-              ->count();
+              ->get();
+            return $data->where('sales_id', $record->sales_id)->count();
           }),
         TextColumn::make('oa')
           ->label('OA')
           ->state(function (PerencanaanPerjalananPermanent $record): string {
-            $specificSalesId = $record->sales_id;
             $data = $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
-              ->where('perencanaan_perjalanan_permanents.sales_id', $specificSalesId)
               ->where('role', 'SE/SM')
               ->where('pjp_status', 'VISIT')
-              ->whereMonth('tanggal', now()->month)->count();
-            return $data >= 1 ? 1 : 0;
+              ->where('alasan', null)
+              ->whereMonth('tanggal', now()->month)
+              ->whereYear('tanggal', now()->year)
+              ->get();
+            $result = $data->where('sales_id', $record->sales_id)->count();
+            return $result >= 1 ? 1 : 0;
           }),
       ])
       ->filters([

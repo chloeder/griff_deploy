@@ -251,7 +251,6 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
               return route('transaksi-stock', ['id' => $record->id]);
             }
           })
-          // ->url(fn (PerencanaanPerjalananPermanentStock $record): string => route('transaksi-stock', ['id' => $record->id]))
           ->badge()
           ->color('success')
           ->label('SELL STOCK')

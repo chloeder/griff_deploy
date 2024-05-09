@@ -175,7 +175,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
-          $query->leftJoin('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanents.leader_id')->select('perencanaan_perjalanan_permanents.*', 'leaders.nama as leader')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
+          $data = $query->leftJoin('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanents.leader_id')->select('perencanaan_perjalanan_permanents.*', 'leaders.nama as leader')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
           // dd($data);
         }
       })
@@ -280,7 +280,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
       ])
       ->actions([
         ActionGroup::make([
-          Tables\Actions\EditAction::make(),
+          Tables\Actions\EditAction::make()->openUrlInNewTab(),
           Tables\Actions\DeleteAction::make(),
           Tables\Actions\Action::make('Edit Status')
             ->hidden(Auth::user()->role !== 'Admin' && Auth::user()->role !== 'Leader')
@@ -299,6 +299,12 @@ class PerencanaanPerjalananPermanentResource extends Resource
                 ]);
                 TransaksiNoPo::where('perencanaan_perjalanan_permanent_id', $record->id)->update([
                   'alasan' => null,
+                ]);
+                TransaksiProduk::where('perencanaan_perjalanan_permanent_id', $record->id)->update([
+                  'qty' => 0,
+                  'nilai' => 0,
+                  'diskon' => 0,
+                  'omset_po' => 0,
                 ]);
                 Notification::make()
                   ->title('PJP Berhasil Ditolak')
@@ -323,7 +329,9 @@ class PerencanaanPerjalananPermanentResource extends Resource
         ])
       ])
       ->bulkActions([
-        Tables\Actions\BulkActionGroup::make([]),
+        Tables\Actions\BulkActionGroup::make([
+          Tables\Actions\DeleteBulkAction::make(),
+        ]),
       ]);
   }
 
@@ -337,11 +345,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
     return [
       'index' => Pages\ListPerencanaanPerjalananPermanents::route('/'),
       'create' => Pages\CreatePerencanaanPerjalananPermanent::route('/create'),
-      'edit' => Pages\EditPerencanaanPerjalananPermanent::route('/{record}/edit'),
-
-      // 'transaksis.index' => ListTransaksiProduks::route('/{parent}/transaksi'),
-      // 'transaksis.create' => CreateTransaksiProduk::route('/{parent}/transaksi/create'),
-      // 'transaksis.edit' => EditTransaksiProduk::route('/{parent}/transaksi/{record}/edit'),
+      'edit' => Pages\EditPerencanaanPerjalananPermanent::route('/{record:uuid}/edit'),
     ];
   }
 }

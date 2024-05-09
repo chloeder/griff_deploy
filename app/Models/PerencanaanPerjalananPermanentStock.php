@@ -37,9 +37,9 @@ class PerencanaanPerjalananPermanentStock extends Model
     'sub_klaster_id',
     'sales_id',
     'toko_id',
-    'omset_po',
     'tanggal',
     'pjp_status',
+    'sell_stocks',
   ];
 
   /**

@@ -18,6 +18,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class PerencanaanPerjalananPermanent extends Model
 {
   use HasFactory;
+  public function isAdmin(User $user)
+  {
+    return $user->role === 'Admin';
+  }
   protected static function boot()
   {
     parent::boot();
@@ -26,8 +30,12 @@ class PerencanaanPerjalananPermanent extends Model
       $model->uuid = Uuid::uuid4()->toString();
     });
   }
+  public function getRouteKeyName(): string
+  {
+    return 'uuid';
+  }
 
-  // protected $table = 'perencanaan_perjalanan_permanents';
+
   protected $fillable = [
     'uuid',
     'leader_id',
