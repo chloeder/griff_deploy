@@ -64,13 +64,6 @@ class LaporanCoverageSPG extends Page implements HasTable
           ->label('Sales')
           ->searchable()
           ->sortable(),
-        TextColumn::make('toko.nama')
-          ->searchable()
-          ->sortable(),
-        TextColumn::make('toko.tipe_toko')
-          ->label('Tipe Toko')
-          ->searchable()
-          ->sortable(),
         TextColumn::make('plan')
           ->label('PLAN')
           ->state(function (PerencanaanPerjalananPermanentStock $record): string {
