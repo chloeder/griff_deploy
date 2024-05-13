@@ -92,7 +92,6 @@ class LaporanCoverageSPG extends Page implements HasTable
               ->where('role', 'SPG')
               ->where('perencanaan_perjalanan_permanents.pjp_status', 'VISIT')
               ->where('perencanaan_perjalanan_permanents.omset_po', '>', 0)
-              ->where('perencanaan_perjalanan_permanents.alasan', null)
               ->whereMonth('perencanaan_perjalanan_permanents.tanggal', now()->month)
               ->whereYear('perencanaan_perjalanan_permanents.tanggal', now()->year)
               ->get();
