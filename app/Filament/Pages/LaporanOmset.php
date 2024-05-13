@@ -56,7 +56,8 @@ class LaporanOmset extends Page implements HasTable
           ])
             ->withFilename('Laporan Omset - ' . date('Y-m-d '))
             ->fromTable()
-        ]),
+        ])
+          ->hidden(auth()->user()->role === 'SPG' || auth()->user()->role === 'SE/SM'),
       ])
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'SPG' || auth()->user()->role === 'SE/SM') {

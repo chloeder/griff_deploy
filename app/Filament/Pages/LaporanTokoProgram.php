@@ -44,12 +44,11 @@ class LaporanTokoProgram extends Page implements HasTable
   {
     return $table
       ->modifyQueryUsing(function (Builder $query) {
-        if (auth()->user()->role === 'Leader') {
+        if (auth()->user()->role !== 'Admin') {
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
-          $query->leftJoin('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->leftJoin('leaders', 'leaders.id', '=', 'tokos.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
-          // dd($data);
+          $data = $query->select('program_tokos.*', 'leaders.nama as leader')->join('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->join('leaders', 'leaders.id', '=', 'tokos.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
         }
       })
       ->poll('0s')
@@ -117,36 +116,20 @@ class LaporanTokoProgram extends Page implements HasTable
           ->searchable()
           ->sortable(),
         TextInputColumn::make('omset_faktur')
+          // ->hidden(auth()->user()->role !== 'Admin' && auth()->user()->role !== 'Leader')
           ->disabled(
-            fn (ProgramToko $record): bool => $record->omset_faktur != 0
+            function (ProgramToko $record) {
+              return auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG' || $record->omset_faktur != 0;
+            }
           )
           ->afterStateUpdated(function (ProgramToko $record, $state) {
-            $record->update([
-              'omset_faktur' => $state,
-            ]);
+            $record->omset_faktur = $state;
+            $record->save();
           })
           ->mask(RawJs::make('$money($input)'))
           ->sortable()
       ])
-      ->filters([
-        // Filter::make('created_at')
-        //   ->form([
-        //     DatePicker::make('Dari'),
-        //     DatePicker::make('Sampai')
-        //       ->default(now()),
-        //   ])
-        //   ->query(function (Builder $query, array $data): Builder {
-        //     return $query
-        //       ->when(
-        //         $data['Dari'],
-        //         fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-        //       )
-        //       ->when(
-        //         $data['Sampai'],
-        //         fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-        //       );
-        //   })
-      ])
+      ->filters([])
       ->actions([
         Action::make('Simpan')
           ->action(function (ProgramToko $record) {
@@ -155,18 +138,18 @@ class LaporanTokoProgram extends Page implements HasTable
               ->success()
               ->send();
           })
+          ->hidden(auth()->user()->role !== 'Admin' && auth()->user()->role !== 'Leader')
           ->button(),
         Action::make('Reset')
           ->action(function (ProgramToko $record) {
-            $record->update([
-              'omset_faktur' => 0,
-            ]);
+            $record->update(['omset_faktur' => 0]);
 
             Notification::make()
               ->title('Omset Faktur Toko ' . $record->toko->nama . ' berhasil direset')
               ->success()
               ->send();
           })
+          ->hidden(auth()->user()->role !== 'Admin' && auth()->user()->role !== 'Leader')
           ->button()
           ->color('danger'),
       ])
