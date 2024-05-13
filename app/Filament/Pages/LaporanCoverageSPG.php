@@ -88,24 +88,27 @@ class LaporanCoverageSPG extends Page implements HasTable
         TextColumn::make('ec')
           ->label('EC')
           ->state(function (PerencanaanPerjalananPermanentStock $record): string {
-            $data = $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')
+            $data = $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')->join('perencanaan_perjalanan_permanents', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
               ->where('role', 'SPG')
-              ->where('pjp_status', 'VISIT')
-              ->where('sell_stocks', '!=', 0)
-              ->whereMonth('tanggal', now()->month)
-              ->whereYear('tanggal', now()->year)
+              ->where('perencanaan_perjalanan_permanents.pjp_status', 'VISIT')
+              ->where('perencanaan_perjalanan_permanents.omset_po', '>', 0)
+              ->where('perencanaan_perjalanan_permanents.alasan', null)
+              ->whereMonth('perencanaan_perjalanan_permanents.tanggal', now()->month)
+              ->whereYear('perencanaan_perjalanan_permanents.tanggal', now()->year)
               ->get();
+            // dd($data->toArray());
             return $data->where('sales_id', $record->sales_id)->count();
           }),
         TextColumn::make('oa')
           ->label('OA')
           ->state(function (PerencanaanPerjalananPermanentStock $record): string {
-            $data = $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')
+            $data = $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')->join('perencanaan_perjalanan_permanents', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
               ->where('role', 'SPG')
-              ->where('pjp_status', 'VISIT')
-              ->where('sell_stocks', '!=', 0)
-              ->whereMonth('tanggal', now()->month)
-              ->whereYear('tanggal', now()->year)
+              ->where('perencanaan_perjalanan_permanents.pjp_status', 'VISIT')
+              ->where('perencanaan_perjalanan_permanents.omset_po', '>', 0)
+              ->where('perencanaan_perjalanan_permanents.alasan', null)
+              ->whereMonth('perencanaan_perjalanan_permanents.tanggal', now()->month)
+              ->whereYear('perencanaan_perjalanan_permanents.tanggal', now()->year)
               ->get();
             $result = $data->where('sales_id', $record->sales_id)->count();
             return $result >= 1 ? 1 : 0;
