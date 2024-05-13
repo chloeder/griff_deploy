@@ -289,7 +289,6 @@ class PerencanaanPerjalananPermanentResource extends Resource
               $record->status = $data['status'];
               $record->save();
 
-
               if ($data['status'] === 'Pending') {
                 $record->update([
                   'pjp_status' => 'PLAN',
@@ -307,7 +306,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
                   'omset_po' => 0,
                 ]);
                 Notification::make()
-                  ->title('PJP Berhasil Ditolak')
+                  ->title('Status PJP Berhasil Diubah')
                   ->success()
                   ->send();
                 return;
@@ -324,7 +323,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
                   'Pending' => 'Tolak',
                 ])
                 ->searchable()
-
+                ->required()
             ]),
         ])
       ])

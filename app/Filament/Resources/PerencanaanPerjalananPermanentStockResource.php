@@ -352,7 +352,7 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
                   'Pending' => 'Tolak',
                 ])
                 ->searchable()
-
+                ->required()
             ]),
         ])
       ])
