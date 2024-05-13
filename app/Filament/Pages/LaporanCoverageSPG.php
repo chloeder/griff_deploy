@@ -87,7 +87,6 @@ class LaporanCoverageSPG extends Page implements HasTable
             $data = $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')
               ->where('role', 'SPG')
               ->where('pjp_status', 'VISIT')
-              ->where('sell_stocks', '!=', 0)
               ->whereMonth('tanggal', now()->month)
               ->whereYear('tanggal', now()->year)
               ->get();

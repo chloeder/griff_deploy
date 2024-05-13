@@ -84,7 +84,6 @@ class LaporanCoverageSE extends Page implements HasTable
             $data = $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
               ->where('role', 'SE/SM')
               ->where('pjp_status', 'VISIT')
-              ->where('alasan', null)
               ->whereMonth('tanggal', now()->month)
               ->whereYear('tanggal', now()->year)
               ->get();
