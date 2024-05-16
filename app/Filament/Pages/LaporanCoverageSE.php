@@ -112,9 +112,12 @@ class LaporanCoverageSE extends Page implements HasTable
               ->where('alasan', null)
               ->whereMonth('tanggal', now()->month)
               ->whereYear('tanggal', now()->year)
+              ->groupBy('toko_id')
               ->get();
+            // dd($data->toArray());
             $result = $data->where('sales_id', $record->sales_id)->count();
-            return $result >= 1 ? 1 : 0;
+            // dd($result);
+            return $result;
           }),
       ])
       ->filters([

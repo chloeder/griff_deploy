@@ -31,8 +31,8 @@ class LaporanTokoProgram extends Page implements HasTable
 {
   use InteractsWithTable;
   protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
-  protected static ?string $navigationLabel = 'Omset Program';
-  protected static ?string $title = 'Laporan Omset Program';
+  protected static ?string $navigationLabel = 'Omset Program Toko';
+  protected static ?string $title = 'Laporan Omset Program Toko';
   protected static ?int $navigationSort = 13;
   protected static ?string $navigationGroup = 'Laporan';
   protected static string $view = 'filament.pages.laporan-toko-program';
@@ -51,7 +51,6 @@ class LaporanTokoProgram extends Page implements HasTable
           $data = $query->select('program_tokos.*', 'leaders.nama as leader')->join('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->join('leaders', 'leaders.id', '=', 'tokos.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
         }
       })
-      ->poll('0s')
       ->query(ProgramToko::query())
       ->columns([
         TextColumn::make('toko.leader.nama')
@@ -119,7 +118,13 @@ class LaporanTokoProgram extends Page implements HasTable
           // ->hidden(auth()->user()->role !== 'Admin' && auth()->user()->role !== 'Leader')
           ->disabled(
             function (ProgramToko $record) {
-              return auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG' || $record->omset_faktur != 0;
+              if (auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG') {
+                return true;
+              } elseif ($record->is_disabled === 1) {
+                return true;
+              } else {
+                return false;
+              }
             }
           )
           ->afterStateUpdated(function (ProgramToko $record, $state) {
@@ -133,6 +138,8 @@ class LaporanTokoProgram extends Page implements HasTable
       ->actions([
         Action::make('Simpan')
           ->action(function (ProgramToko $record) {
+            $record->update(['is_disabled' => true]);
+
             Notification::make()
               ->title('Omset Faktur Toko ' . $record->toko->nama . ' berhasil disimpan')
               ->success()
@@ -142,7 +149,12 @@ class LaporanTokoProgram extends Page implements HasTable
           ->button(),
         Action::make('Reset')
           ->action(function (ProgramToko $record) {
-            $record->update(['omset_faktur' => 0]);
+            $record->update(
+              [
+                'omset_faktur' => 0,
+                'is_disabled' => false,
+              ]
+            );
 
             Notification::make()
               ->title('Omset Faktur Toko ' . $record->toko->nama . ' berhasil direset')
