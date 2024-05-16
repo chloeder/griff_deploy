@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "coolsam/flatpickr": "^3.1",
         "devaslanphp/filament-avatar": "^1.0",
         "filament/filament": "^3.2",
         "flowframe/laravel-trend": "^0.1.5",
@@ -16,6 +17,7 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "malzariey/filament-daterangepicker-filter": "^2.5",
         "pxlrbt/filament-excel": "^2.3",
         "ramsey/uuid": "^4.7"
     },

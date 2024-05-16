@@ -12,7 +12,7 @@ return new class extends Migration
   public function up(): void
   {
     Schema::table('program_tokos', function (Blueprint $table) {
-      $table->boolean('is_disabled')->default(false);
+      $table->date('tanggal_pembuatan')->nullable();
     });
   }
 
@@ -22,7 +22,7 @@ return new class extends Migration
   public function down(): void
   {
     Schema::table('program_tokos', function (Blueprint $table) {
-      $table->dropColumn('is_disabled');
+      $table->dropColumn('tanggal_pembuatan');
     });
   }
 };

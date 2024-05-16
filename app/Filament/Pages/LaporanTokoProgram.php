@@ -11,23 +11,14 @@ use Illuminate\Support\Str;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
-use pxlrbt\FilamentExcel\Columns\Column;
-use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Columns\TextInputColumn;
-use Filament\Tables\Actions\DeleteBulkAction;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
-use App\Models\PerencanaanPerjalananPermanent;
+use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Concerns\InteractsWithTable;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-
+use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 
 class LaporanTokoProgram extends Page implements HasTable
 {
@@ -51,6 +42,7 @@ class LaporanTokoProgram extends Page implements HasTable
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
           $data = $query->select('program_tokos.*', 'leaders.nama as leader')->join('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->join('leaders', 'leaders.id', '=', 'tokos.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
+          // dd($data);
         }
       })
       ->query(ProgramToko::query())
@@ -120,7 +112,10 @@ class LaporanTokoProgram extends Page implements HasTable
           ->badge()
           ->color('success')
           ->prefix('Rp. ')
-          ->numeric(locale: 'id')
+          ->numeric(locale: 'id'),
+        TextColumn::make('tanggal_pembuatan')
+          ->date()
+          ->sortable(),
         // TextInputColumn::make('omset_faktur')
         //   ->disabled(
         //     function (ProgramToko $record) {
@@ -141,23 +136,7 @@ class LaporanTokoProgram extends Page implements HasTable
         //   ->sortable()
       ])
       ->filters([
-        Filter::make('created_at')
-          ->form([
-            DatePicker::make('Dari'),
-            DatePicker::make('Sampai')
-              ->default(now()),
-          ])
-          ->query(function (Builder $query, array $data): Builder {
-            return $query
-              ->when(
-                $data['Dari'],
-                fn (Builder $query, $date): Builder => $query->whereDate('program_tokos.created_at', '>=', $date),
-              )
-              ->when(
-                $data['Sampai'],
-                fn (Builder $query, $date): Builder => $query->whereDate('program_tokos.created_at', '<=', $date),
-              );
-          })
+        DateRangeFilter::make('tanggal_pembuatan'),
       ])
       ->actions([
         ActionGroup::make([

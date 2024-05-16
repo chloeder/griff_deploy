@@ -20,6 +20,7 @@ class ProgramToko extends Model
     'cashback_target',
     'omset_faktur',
     'is_disabled',
+    'tanggal_pembuatan',
   ];
 
   public function toko(): BelongsTo

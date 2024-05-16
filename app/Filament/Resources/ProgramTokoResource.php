@@ -6,7 +6,9 @@ use App\Filament\Resources\ProgramTokoResource\Pages;
 use App\Filament\Resources\ProgramTokoResource\RelationManagers;
 use App\Models\ProgramToko;
 use App\Models\Toko;
+use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Forms\Set;
@@ -22,6 +24,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Malzariey\FilamentDaterangepickerFilter\Fields\DateRangePicker;
 
 class ProgramTokoResource extends Resource
 {
@@ -82,6 +85,10 @@ class ProgramTokoResource extends Resource
               ->required()
               ->numeric()
               ->maxLength(255),
+            Flatpickr::make('report_month')
+              ->theme(\Coolsam\FilamentFlatpickr\Enums\FlatpickrTheme::DARK)
+              ->monthSelect()
+              ->required()
           ])
           ->columns(3),
       ]);
@@ -95,8 +102,8 @@ class ProgramTokoResource extends Resource
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
-          $data =  $query->leftJoin('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->leftJoin('leaders', 'leaders.id', '=', 'tokos.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
-          // dd($lastWord);
+          $data =  $query->select('program_tokos.*', 'leaders.nama as leader')->join('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->join('leaders', 'leaders.id', '=', 'tokos.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
+          // dd($data);
         }
       })
       ->recordUrl(null)
@@ -142,6 +149,9 @@ class ProgramTokoResource extends Resource
           ->prefix('Rp. ')
           ->numeric(locale: 'id')
           ->searchable()
+          ->sortable(),
+        Tables\Columns\TextColumn::make('tanggal_pembuatan')
+          ->date()
           ->sortable(),
       ])
       ->filters([
