@@ -19,6 +19,8 @@ use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Actions\DeleteBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use App\Models\PerencanaanPerjalananPermanent;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -114,56 +116,68 @@ class LaporanTokoProgram extends Page implements HasTable
           ->numeric(locale: 'id')
           ->searchable()
           ->sortable(),
-        TextInputColumn::make('omset_faktur')
-          // ->hidden(auth()->user()->role !== 'Admin' && auth()->user()->role !== 'Leader')
-          ->disabled(
-            function (ProgramToko $record) {
-              if (auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG') {
-                return true;
-              } elseif ($record->is_disabled) {
-                return true;
-              } else {
-                return false;
-              }
-            }
-          )
-          ->afterStateUpdated(function (ProgramToko $record, $state) {
-            $record->omset_faktur = $state;
-            $record->save();
-          })
-          ->mask(RawJs::make('$money($input)'))
-          ->sortable()
+        TextColumn::make('omset_faktur')
+          ->badge()
+          ->color('success')
+          ->prefix('Rp. ')
+          ->numeric(locale: 'id')
+        // TextInputColumn::make('omset_faktur')
+        //   ->disabled(
+        //     function (ProgramToko $record) {
+        //       if (auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG') {
+        //         return true;
+        //       } elseif ($record->is_disabled) {
+        //         return true;
+        //       } else {
+        //         return false;
+        //       }
+        //     }
+        //   )
+        //   ->afterStateUpdated(function (ProgramToko $record, $state) {
+        //     $record->omset_faktur = $state;
+        //     $record->save();
+        //   })
+        //   ->mask(RawJs::make('$money($input)'))
+        //   ->sortable()
       ])
       ->filters([])
       ->actions([
-        Action::make('Simpan')
-          ->action(function (ProgramToko $record) {
-            $record->update(['is_disabled' => true]);
+        ActionGroup::make([
+          Action::make('Edit Omset Faktur')
+            ->icon('heroicon-o-pencil')
+            ->hidden(auth()->user()->role !== 'Admin' && auth()->user()->role !== 'Leader')
+            ->action(function (ProgramToko $record, array $data): void {
+              $record->omset_faktur = $data['omset_faktur'];
+              $record->save();
+              Notification::make()
+                ->title('Omset Faktur Toko ' . $record->toko->nama . ' berhasil disimpan')
+                ->success()
+                ->send();
+            })
+            ->form([
+              TextInput::make('omset_faktur')
+                ->required()
+                ->mask(RawJs::make('$money($input)'))
 
-            Notification::make()
-              ->title('Omset Faktur Toko ' . $record->toko->nama . ' berhasil disimpan')
-              ->success()
-              ->send();
-          })
-          ->hidden(auth()->user()->role !== 'Admin' && auth()->user()->role !== 'Leader')
-          ->button(),
-        Action::make('Reset')
-          ->action(function (ProgramToko $record) {
-            $record->update(
-              [
-                'omset_faktur' => 0,
-                'is_disabled' => false,
-              ]
-            );
+            ]),
+          // Action::make('Reset')
+          //   ->action(function (ProgramToko $record) {
+          //     $record->update(
+          //       [
+          //         'omset_faktur' => 0,
+          //         'is_disabled' => false,
+          //       ]
+          //     );
 
-            Notification::make()
-              ->title('Omset Faktur Toko ' . $record->toko->nama . ' berhasil direset')
-              ->success()
-              ->send();
-          })
-          ->hidden(auth()->user()->role !== 'Admin' && auth()->user()->role !== 'Leader')
-          ->button()
-          ->color('danger'),
+          //     Notification::make()
+          //       ->title('Omset Faktur Toko ' . $record->toko->nama . ' berhasil direset')
+          //       ->success()
+          //       ->send();
+          //   })
+          //   ->hidden(auth()->user()->role !== 'Admin' && auth()->user()->role !== 'Leader')
+          //   ->button()
+          //   ->color('danger'),
+        ])
       ])
       ->bulkActions([
         // ExportBulkAction::make(),
