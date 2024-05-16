@@ -151,11 +151,11 @@ class LaporanTokoProgram extends Page implements HasTable
             return $query
               ->when(
                 $data['Dari'],
-                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                fn (Builder $query, $date): Builder => $query->whereDate('program_tokos.created_at', '>=', $date),
               )
               ->when(
                 $data['Sampai'],
-                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                fn (Builder $query, $date): Builder => $query->whereDate('program_tokos.created_at', '<=', $date),
               );
           })
       ])
