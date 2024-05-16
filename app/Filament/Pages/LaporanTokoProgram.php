@@ -140,7 +140,25 @@ class LaporanTokoProgram extends Page implements HasTable
         //   ->mask(RawJs::make('$money($input)'))
         //   ->sortable()
       ])
-      ->filters([])
+      ->filters([
+        Filter::make('created_at')
+          ->form([
+            DatePicker::make('Dari'),
+            DatePicker::make('Sampai')
+              ->default(now()),
+          ])
+          ->query(function (Builder $query, array $data): Builder {
+            return $query
+              ->when(
+                $data['Dari'],
+                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+              )
+              ->when(
+                $data['Sampai'],
+                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+              );
+          })
+      ])
       ->actions([
         ActionGroup::make([
           Action::make('Edit Omset Faktur')
