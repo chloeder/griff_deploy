@@ -120,7 +120,7 @@ class LaporanTokoProgram extends Page implements HasTable
             function (ProgramToko $record) {
               if (auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG') {
                 return true;
-              } elseif ($record->is_disabled === 1) {
+              } elseif ($record->is_disabled === true) {
                 return true;
               } else {
                 return false;
