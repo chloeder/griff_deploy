@@ -6,6 +6,7 @@ use Filament\Forms\Set;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
 use App\Models\ProgramToko;
+use Carbon\Carbon;
 use Filament\Support\RawJs;
 use Illuminate\Support\Str;
 use Filament\Tables\Filters\Filter;
@@ -13,6 +14,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Notifications\Notification;
@@ -115,7 +117,10 @@ class LaporanTokoProgram extends Page implements HasTable
           ->numeric(locale: 'id'),
         TextColumn::make('tanggal_pembuatan')
           ->date()
-          ->sortable(),
+          ->sortable()
+          ->formatStateUsing(function (string $state): string {
+            return Carbon::parse($state)->format('F Y');
+          }),
         // TextInputColumn::make('omset_faktur')
         //   ->disabled(
         //     function (ProgramToko $record) {
@@ -136,7 +141,23 @@ class LaporanTokoProgram extends Page implements HasTable
         //   ->sortable()
       ])
       ->filters([
-        DateRangeFilter::make('tanggal_pembuatan'),
+        Filter::make('tanggal_pembuatan')
+          ->form([
+            DatePicker::make('Dari'),
+            DatePicker::make('Sampai')
+              ->default(now()),
+          ])
+          ->query(function (Builder $query, array $data): Builder {
+            return $query
+              ->when(
+                $data['Dari'],
+                fn (Builder $query, $date): Builder => $query->whereDate('tanggal_pembuatan', '>=', $date),
+              )
+              ->when(
+                $data['Sampai'],
+                fn (Builder $query, $date): Builder => $query->whereDate('tanggal_pembuatan', '<=', $date),
+              );
+          })
       ])
       ->actions([
         ActionGroup::make([

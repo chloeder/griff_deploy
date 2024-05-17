@@ -19,7 +19,7 @@ class CreateProgramToko extends CreateRecord
 
   protected function mutateFormDataBeforeCreate(array $data): array
   {
-    $data['tanggal_pembuatan'] = Carbon::now()->format('Y-m-d');
+    $data['tanggal_pembuatan'] = Carbon::now()->format('F Y');
 
     return $data;
   }

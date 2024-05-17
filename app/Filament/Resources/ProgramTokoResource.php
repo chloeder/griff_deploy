@@ -6,6 +6,7 @@ use App\Filament\Resources\ProgramTokoResource\Pages;
 use App\Filament\Resources\ProgramTokoResource\RelationManagers;
 use App\Models\ProgramToko;
 use App\Models\Toko;
+use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -89,6 +90,8 @@ class ProgramTokoResource extends Resource
             //   ->theme(\Coolsam\FilamentFlatpickr\Enums\FlatpickrTheme::DARK)
             //   ->monthSelect(),
             DateRangePicker::make('tanggal_pembuatan')
+              ->disableCustomRange()
+              ->maxDate(Carbon::now()->addMonth())
           ])
           ->columns(3),
       ]);
@@ -152,7 +155,12 @@ class ProgramTokoResource extends Resource
           ->sortable(),
         Tables\Columns\TextColumn::make('tanggal_pembuatan')
           ->date()
-          ->sortable(),
+          ->sortable()
+          ->formatStateUsing(function (string $state): string {
+            return Carbon::parse($state)->format('F Y');
+          }),
+
+
       ])
       ->filters([
         //

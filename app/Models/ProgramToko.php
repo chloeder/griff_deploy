@@ -12,6 +12,10 @@ class ProgramToko extends Model
 {
   use HasFactory;
 
+  protected $casts = [
+    'tanggal_pembuatan' => 'date',
+  ];
+
   protected $fillable = [
     'toko_id',
     'sewa_display',
