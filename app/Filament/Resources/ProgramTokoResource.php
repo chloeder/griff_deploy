@@ -85,7 +85,10 @@ class ProgramTokoResource extends Resource
               ->required()
               ->numeric()
               ->maxLength(255),
-            DateRangePicker::make('tanggal_pembuatan')
+            Flatpickr::make('tanggal_pembuatan')
+              ->theme(\Coolsam\FilamentFlatpickr\Enums\FlatpickrTheme::DARK)
+              ->monthSelect(),
+            // DateRangePicker::make('tanggal_pembuatan')
           ])
           ->columns(3),
       ]);
