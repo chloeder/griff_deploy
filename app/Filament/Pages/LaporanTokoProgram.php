@@ -103,7 +103,7 @@ class LaporanTokoProgram extends Page implements HasTable
           ->badge()
           ->color('success')
           ->state(function ($record): string {
-            return $record->join('perencanaan_perjalanan_permanents', 'perencanaan_perjalanan_permanents.toko_id', '=', 'program_tokos.toko_id')->where('program_tokos.toko_id', $record->toko_id)->sum('omset_po');
+            return $record->join('perencanaan_perjalanan_permanents', 'perencanaan_perjalanan_permanents.toko_id', '=', 'program_tokos.toko_id')->whereMonth('perencanaan_perjalanan_permanents.tanggal', Carbon::now()->month)->where('perencanaan_perjalanan_permanents.pjp_status', 'VISIT')->where('program_tokos.toko_id', $record->toko_id)->sum('omset_po');
           })
           ->label('Omset Sistem')
           ->prefix('Rp. ')
