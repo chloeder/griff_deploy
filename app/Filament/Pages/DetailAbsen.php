@@ -14,6 +14,6 @@ class DetailAbsen extends Page
   public $userId;
   public function mount($id)
   {
-    $this->userId = Absen::find($id)->user_id;
+    $this->userId = $id;
   }
 }

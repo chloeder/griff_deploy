@@ -23,7 +23,7 @@ class DetailAbsen extends Component implements HasTable, HasForms
 
   public function mount($id)
   {
-    $this->userId = Absen::find($id)->user_id;
+    $this->userId = $id;
   }
 
   public function table(Table $table): Table
