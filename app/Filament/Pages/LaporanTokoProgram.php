@@ -39,12 +39,14 @@ class LaporanTokoProgram extends Page implements HasTable
   {
     return $table
       ->modifyQueryUsing(function (Builder $query) {
-        if (auth()->user()->role !== 'Admin') {
+        if (auth()->user()->role === 'Leader') {
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
           $data = $query->select('program_tokos.*', 'leaders.nama as leader')->join('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->join('leaders', 'leaders.id', '=', 'tokos.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
-          // dd($data);
+        } elseif (auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG') {
+          $data = $query->join('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->where('tokos.sales_marketing_id', auth()->user()->id)->orWhere('tokos.sales_promotion_id', auth()->user()->id)->get();
+          // dd($data->toArray());
         }
       })
       ->query(ProgramToko::query())
@@ -116,6 +118,7 @@ class LaporanTokoProgram extends Page implements HasTable
           ->prefix('Rp. ')
           ->numeric(locale: 'id'),
         TextColumn::make('tanggal_pembuatan')
+          ->label('Periode Program')
           ->date()
           ->sortable()
           ->formatStateUsing(function (string $state): string {
@@ -142,6 +145,7 @@ class LaporanTokoProgram extends Page implements HasTable
       ])
       ->filters([
         Filter::make('tanggal_pembuatan')
+          ->label('Periode Program')
           ->form([
             DatePicker::make('Dari'),
             DatePicker::make('Sampai')

@@ -155,6 +155,7 @@ class ProgramTokoResource extends Resource
           ->searchable()
           ->sortable(),
         Tables\Columns\TextColumn::make('tanggal_pembuatan')
+          ->label('Periode Program')
           ->date()
           ->sortable()
           ->formatStateUsing(function (string $state): string {
