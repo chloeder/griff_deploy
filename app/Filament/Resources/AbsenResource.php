@@ -104,8 +104,9 @@ class AbsenResource extends Resource
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
-          $query->leftJoin('users', 'users.id', '=', 'absens.user_id')->where('users.username', 'like', '%' . $lastWord . '%')->get();
-          // dd($data);
+          $data = $query->select('absens.*', 'users.username as username')->join('users', 'users.id', '=', 'absens.user_id')->where('users.username', 'like', '%' . $lastWord . '%')->get();
+          // dd($data->toArray());
+          // dd($lastWord);
         }
       })
       ->poll('10s')
@@ -209,6 +210,7 @@ class AbsenResource extends Resource
                   'Disetujui' => 'Setujui',
                   'Ditolak' => 'Tolak',
                 ])
+                ->required()
                 ->searchable()
                 ->default(function (Absen $absen) {
                   return $absen->status_absen;
