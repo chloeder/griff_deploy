@@ -90,6 +90,7 @@ class ProgramTokoResource extends Resource
             //   ->theme(\Coolsam\FilamentFlatpickr\Enums\FlatpickrTheme::DARK)
             //   ->monthSelect(),
             DateRangePicker::make('tanggal_pembuatan')
+              ->label('Periode Program')
               ->disableCustomRange()
               ->maxDate(Carbon::now()->addMonth())
           ])
