@@ -40,9 +40,16 @@ class LaporanAbsen extends Page implements HasTable
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
-          $query->leftJoin('users', 'users.id', '=', 'absens.user_id')->where('status_absen', 'Disetujui')->where('users.username', 'like', '%' . $lastWord . '%')->groupBy('absens.user_id');
+          $query->leftJoin('users', 'users.id', '=', 'absens.user_id')
+            ->where('status_absen', 'Disetujui')
+            ->where('users.username', 'like', '%' . $lastWord . '%')
+            ->groupBy('absens.user_id')
+            ->orderBy('users.username', 'asc');
         } else {
-          $query->join('users', 'users.id', '=', 'absens.user_id')->where('status_absen', 'Disetujui')->groupBy('absens.user_id');
+          $query->join('users', 'users.id', '=', 'absens.user_id')
+            ->where('status_absen', 'Disetujui')
+            ->groupBy('absens.user_id')
+            ->orderBy('users.username', 'asc');
         }
       })
       ->poll('10s')
@@ -58,22 +65,43 @@ class LaporanAbsen extends Page implements HasTable
         TextColumn::make('masuk')
           ->label('Masuk')
           ->state(function (Absen $record): string {
-            return $record->join('users', 'users.id', '=', 'absens.user_id')->where('users.id', $record->user_id)->where('status_absen', 'Disetujui')->where('keterangan_absen', 'Hadir')->count();
+
+            return $record->join('users', 'users.id', '=', 'absens.user_id')
+              ->where('users.id', $record->user_id)
+              ->where('status_absen', 'Disetujui')
+              ->where('keterangan_absen', 'Hadir')
+              ->whereMonth('absens.tanggal_absen', date('m'))
+              ->count();
           }),
         TextColumn::make('alpa')
           ->label('Alpa')
           ->state(function (Absen $record): string {
-            return $record->join('users', 'users.id', '=', 'absens.user_id')->where('users.id', $record->user_id)->where('status_absen', 'Disetujui')->where('keterangan_absen', 'Alpa')->count();
+            return $record->join('users', 'users.id', '=', 'absens.user_id')
+              ->where('users.id', $record->user_id)
+              ->where('status_absen', 'Disetujui')
+              ->where('keterangan_absen', 'Alpa')
+              ->whereMonth('absens.tanggal_absen', date('m'))
+              ->count();
           }),
         TextColumn::make('izin')
           ->label('Izin')
           ->state(function (Absen $record): string {
-            return $record->join('users', 'users.id', '=', 'absens.user_id')->where('users.id', $record->user_id)->where('status_absen', 'Disetujui')->where('keterangan_absen', 'Izin')->count();
+            return $record->join('users', 'users.id', '=', 'absens.user_id')
+              ->where('users.id', $record->user_id)
+              ->where('status_absen', 'Disetujui')
+              ->where('keterangan_absen', 'Izin')
+              ->whereMonth('absens.tanggal_absen', date('m'))
+              ->count();
           }),
         TextColumn::make('sakit')
           ->label('Sakit')
           ->state(function (Absen $record): string {
-            return $record->join('users', 'users.id', '=', 'absens.user_id')->where('users.id', $record->user_id)->where('status_absen', 'Disetujui')->where('keterangan_absen', 'Sakit')->count();
+            return $record->join('users', 'users.id', '=', 'absens.user_id')
+              ->where('users.id', $record->user_id)
+              ->where('status_absen', 'Disetujui')
+              ->where('keterangan_absen', 'Sakit')
+              ->whereMonth('absens.tanggal_absen', date('m'))
+              ->count();
           }),
         TextColumn::make('user.karyawan.no_rek')
           ->label('No. Rekening')
@@ -92,25 +120,7 @@ class LaporanAbsen extends Page implements HasTable
           ->sortable()
           ->searchable(),
       ])
-      ->filters([
-        Filter::make('tanggal_absen')
-          ->form([
-            DatePicker::make('Dari'),
-            DatePicker::make('Sampai')
-              ->default(now()),
-          ])
-          ->query(function (Builder $query, array $data): Builder {
-            return $query
-              ->when(
-                $data['Dari'],
-                fn (Builder $query, $date): Builder => $query->whereDate('tanggal_absen', '>=', $date),
-              )
-              ->when(
-                $data['Sampai'],
-                fn (Builder $query, $date): Builder => $query->whereDate('tanggal_absen', '<=', $date),
-              );
-          })
-      ])
+      ->filters([])
       ->actions([
         Action::make('Lihat')
           ->hidden(Auth::user()->role !== 'Admin' && Auth::user()->role !== 'Leader')
@@ -120,5 +130,29 @@ class LaporanAbsen extends Page implements HasTable
       ->bulkActions([
         // ExportBulkAction::make(),
       ]);
+  }
+
+  public function filters(): array
+  {
+
+    return [
+      Filter::make('tanggal_absen')
+        ->form([
+          DatePicker::make('Dari'),
+          DatePicker::make('Sampai')
+            ->default(now()),
+        ])
+        ->query(function (Builder $query, array $data): Builder {
+          return $query
+            ->when(
+              $data['Dari'],
+              fn (Builder $query, $date): Builder => $query->whereDate('tanggal_absen', '>=', $date),
+            )
+            ->when(
+              $data['Sampai'],
+              fn (Builder $query, $date): Builder => $query->whereDate('tanggal_absen', '<=', $date),
+            );
+        })
+    ];
   }
 }

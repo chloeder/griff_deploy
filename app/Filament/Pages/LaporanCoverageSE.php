@@ -6,6 +6,7 @@ use App\Models\PerencanaanPerjalananPermanent;
 use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Pages\Page;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -13,6 +14,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
@@ -42,13 +44,23 @@ class LaporanCoverageSE extends Page implements HasTable
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
-          $data = $query->select('perencanaan_perjalanan_permanents.*', 'leaders.nama as leader')->join('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanents.leader_id')->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')->where('role', 'SE/SM')->where('leaders.nama', 'like', '%' . $lastWord . '%')->groupBy('sales_id');
+          $data = $query->select('perencanaan_perjalanan_permanents.*', 'leaders.nama as leader')
+            ->join('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanents.leader_id')
+            ->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
+            ->where('role', 'SE/SM')
+            ->where('leaders.nama', 'like', '%' . $lastWord . '%')
+            ->groupBy('sales_id')
+            ->orderBy('users.username', 'asc');
 
           // dd($data->toArray());
         } elseif (auth()->user()->role === 'SE/SM') {
-          $data = $query->where('sales_id', auth()->user()->id)->groupBy('sales_id');
+          $data = $query->where('sales_id', auth()->user()->id)
+            ->groupBy('sales_id');
         } else {
-          $data = $query->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')->where('role', 'SE/SM')->groupBy('sales_id');
+          $data = $query->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
+            ->where('role', 'SE/SM')
+            ->groupBy('sales_id')
+            ->orderBy('users.username', 'asc');
           // dd($data);
         }
       })
@@ -120,26 +132,13 @@ class LaporanCoverageSE extends Page implements HasTable
             return $result;
           }),
       ])
-      ->filters([
-        Filter::make('tanggal')
-          ->form([
-            DatePicker::make('Dari'),
-            DatePicker::make('Sampai')
-              ->default(now()),
-          ])
-          ->query(function (Builder $query, array $data): Builder {
-            return $query
-              ->when(
-                $data['Dari'],
-                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '>=', $date),
-              )
-              ->when(
-                $data['Sampai'],
-                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '<=', $date),
-              );
-          })
+      ->filters([])
+      ->actions([
+        Action::make('Lihat')
+          ->hidden(Auth::user()->role !== 'Admin' && Auth::user()->role !== 'Leader')
+          ->url(fn (PerencanaanPerjalananPermanent $record): string => route('detail-coverage-se', ['id' => $record->sales_id]))
+          ->icon('heroicon-o-eye')
       ])
-      ->actions([])
       ->bulkActions([
         // ExportBulkAction::make(),
       ]);

@@ -2,17 +2,17 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\Absen;
 use Filament\Pages\Page;
 
-class DetailAbsen extends Page
+class DetailCoverageSPG extends Page
 {
   protected static ?string $navigationIcon = 'heroicon-o-document-text';
   protected static bool $shouldRegisterNavigation = false;
-  protected static string $view = 'filament.pages.detail-absen';
-  public $userId;
+  protected static string $view = 'filament.pages.detail-coverage-s-p-g';
+
+  public $salesId;
   public function mount($id)
   {
-    $this->userId = $id;
+    $this->salesId = $id;
   }
 }

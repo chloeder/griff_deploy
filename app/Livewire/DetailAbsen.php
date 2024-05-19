@@ -11,6 +11,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Livewire\Component;
 
@@ -29,9 +30,19 @@ class DetailAbsen extends Component implements HasTable, HasForms
   public function table(Table $table): Table
   {
     return $table
-      ->query(Absen::query()->where('user_id', $this->userId))
+      ->groups([
+        Group::make('keterangan_absen')
+          ->label('KETERANGAN ABSEN'),
+      ])
+      ->defaultGroup('keterangan_absen')
+      ->query(Absen::query()->where('user_id', $this->userId)->where('status_absen', 'Disetujui'))
       ->poll('10s')
       ->columns([
+        TextColumn::make('id')
+          ->label('No')
+          ->rowIndex()
+          ->searchable()
+          ->sortable(),
         TextColumn::make('user.karyawan.nama')
           ->sortable()
           ->searchable(),
@@ -83,9 +94,10 @@ class DetailAbsen extends Component implements HasTable, HasForms
       ->filters([
         Filter::make('tanggal_absen')
           ->form([
-            DatePicker::make('Dari'),
+            DatePicker::make('Dari')
+              ->default(now()->startOfMonth()),
             DatePicker::make('Sampai')
-              ->default(now()),
+              ->default(now()->endOfMonth()),
           ])
           ->query(function (Builder $query, array $data): Builder {
             return $query
@@ -99,47 +111,8 @@ class DetailAbsen extends Component implements HasTable, HasForms
               );
           })
       ])
-      ->actions([
-        // ActionGroup::make([
-        //   Tables\Actions\EditAction::make(),
-        //   Tables\Actions\DeleteAction::make(),
-        //   Tables\Actions\Action::make('Edit Status')
-        //     ->hidden(function ($record) {
-        //       if (Auth::user()->role === 'Leader' && $record->user->role === 'Leader') {
-        //         return true;
-        //       } elseif (Auth::user()->role === 'SE/SM' && $record->user->role === 'SE/SM') {
-        //         return true;
-        //       } elseif (Auth::user()->role === 'SPG' && $record->user->role === 'SPG') {
-        //         return true;
-        //       }
-        //     })
-        //     ->icon('heroicon-o-pencil')
-        //     ->action(function (Absen $record, array $data): void {
-        //       $record->status_absen = $data['status_absen'];
-        //       $record->save();
-
-        //       Notification::make()
-        //         ->title('Status Absen Berhasil Diubah')
-        //         ->success()
-        //         ->send();
-        //     })
-        //     ->form([
-        //       Select::make('status_absen')
-        //         ->label('Status Absen')
-        //         ->options([
-        //           'Disetujui' => 'Setujui',
-        //           'Ditolak' => 'Tolak',
-        //         ])
-        //         ->searchable()
-        //         ->default(function (Absen $absen) {
-        //           return $absen->status_absen;
-        //         })
-        //     ]),
-        // ])
-      ])
-      ->bulkActions([
-        // Tables\Actions\BulkActionGroup::make([]),
-      ]);
+      ->actions([])
+      ->bulkActions([]);
   }
   public function render()
   {

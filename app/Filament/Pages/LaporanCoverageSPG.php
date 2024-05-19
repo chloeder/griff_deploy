@@ -4,8 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\PerencanaanPerjalananPermanent;
 use App\Models\PerencanaanPerjalananPermanentStock;
-use App\Models\User;
-use Carbon\Carbon;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
@@ -16,7 +15,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+
 
 class LaporanCoverageSPG extends Page implements HasTable
 {
@@ -117,26 +116,13 @@ class LaporanCoverageSPG extends Page implements HasTable
             return $result;
           }),
       ])
-      ->filters([
-        Filter::make('tanggal')
-          ->form([
-            DatePicker::make('Dari'),
-            DatePicker::make('Sampai')
-              ->default(now()),
-          ])
-          ->query(function (Builder $query, array $data): Builder {
-            return $query
-              ->when(
-                $data['Dari'],
-                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '>=', $date),
-              )
-              ->when(
-                $data['Sampai'],
-                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '<=', $date),
-              );
-          })
+      ->filters([])
+      ->actions([
+        Action::make('Lihat')
+          ->hidden(Auth::user()->role !== 'Admin' && Auth::user()->role !== 'Leader')
+          ->url(fn (PerencanaanPerjalananPermanentStock $record): string => route('detail-coverage-spg', ['id' => $record->sales_id]))
+          ->icon('heroicon-o-eye')
       ])
-      ->actions([])
       ->bulkActions([
         // ExportBulkAction::make(),
       ]);
