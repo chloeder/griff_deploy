@@ -66,34 +66,37 @@ class LaporanCoverageSPG extends Page implements HasTable
         TextColumn::make('plan')
           ->label('PLAN')
           ->state(function (PerencanaanPerjalananPermanentStock $record): string {
+            $dari = session('Dari');
+            $sampai = session('Sampai');
             $data =  $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')
               ->where('role', 'SPG')
-              ->whereMonth('tanggal', now()->month)
-              ->whereYear('tanggal', now()->year)
+              ->whereBetween('tanggal', [$dari, $sampai])
               ->get();
             return $data->where('sales_id', $record->sales_id)->count();
           }),
         TextColumn::make('visit')
           ->label('VISIT')
           ->state(function (PerencanaanPerjalananPermanentStock $record): string {
+            $dari = session('Dari');
+            $sampai = session('Sampai');
             $data = $record->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')
               ->where('role', 'SPG')
               ->where('pjp_status', 'VISIT')
-              ->whereMonth('tanggal', now()->month)
-              ->whereYear('tanggal', now()->year)
+              ->whereBetween('tanggal', [$dari, $sampai])
               ->get();
             return $data->where('sales_id', $record->sales_id)->count();
           }),
         TextColumn::make('ec')
           ->label('EC')
           ->state(function ($record): string {
+            $dari = session('Dari');
+            $sampai = session('Sampai');
             $data = PerencanaanPerjalananPermanent::join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
               ->where('role', 'SPG')
               ->where('pjp_status', 'VISIT')
               ->where('omset_po', '>', 0)
               ->where('alasan', null)
-              ->whereMonth('tanggal', now()->month)
-              ->whereYear('tanggal', now()->year)
+              ->whereBetween('tanggal', [$dari, $sampai])
               ->get();
             // dd($data->toArray());
             return $data->where('sales_id', $record->sales_id)->count();
@@ -101,13 +104,14 @@ class LaporanCoverageSPG extends Page implements HasTable
         TextColumn::make('oa')
           ->label('OA')
           ->state(function ($record): string {
+            $dari = session('Dari');
+            $sampai = session('Sampai');
             $data = PerencanaanPerjalananPermanent::join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
               ->where('role', 'SPG')
               ->where('pjp_status', 'VISIT')
               ->where('omset_po', '>', 0)
               ->where('alasan', null)
-              ->whereMonth('tanggal', now()->month)
-              ->whereYear('tanggal', now()->year)
+              ->whereBetween('tanggal', [$dari, $sampai])
               ->groupBy('toko_id')
               ->get();
             // dd($data->toArray());
@@ -116,7 +120,31 @@ class LaporanCoverageSPG extends Page implements HasTable
             return $result;
           }),
       ])
-      ->filters([])
+      ->filters([
+        Filter::make('tanggal')
+          ->form([
+            DatePicker::make('Dari')
+              ->default(now()->startOfMonth()),
+
+            DatePicker::make('Sampai')
+              ->default(now()->endOfMonth()),
+          ])
+          ->query(function (Builder $query, array $data): Builder {
+            // Store the selected date range in the session
+            session(['Dari' => $data['Dari']]);
+            session(['Sampai' => $data['Sampai']]);
+
+            return $query
+              ->when(
+                $data['Dari'],
+                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '>=', $date),
+              )
+              ->when(
+                $data['Sampai'],
+                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '<=', $date),
+              );
+          })
+      ])
       ->actions([
         Action::make('Lihat')
           ->hidden(Auth::user()->role !== 'Admin' && Auth::user()->role !== 'Leader')
