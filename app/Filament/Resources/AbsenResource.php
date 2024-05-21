@@ -198,12 +198,13 @@ class AbsenResource extends Resource
                   return $absen->status_absen;
                 })
             ]),
-          Tables\Actions\Action::make('Isi Absen Keluar')
+          Tables\Actions\Action::make('ISI ABSEN KELUAR')
             ->icon('heroicon-o-newspaper')
             ->action(function (Absen $record, array $data): void {
               $record->tanggal_keluar = Carbon::now()->format('Y-m-d');
               $record->waktu_keluar = Carbon::now()->format('H:i:s');
               $record->lokasi_keluar = $data['lokasi_keluar'];
+              $record->status_absen = 'Proses';
               $record->save();
 
               Notification::make()
