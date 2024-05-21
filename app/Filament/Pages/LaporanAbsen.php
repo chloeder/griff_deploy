@@ -164,6 +164,7 @@ class LaporanAbsen extends Page implements HasTable
           FilamentExportBulkAction::make('Export')
             ->disableAdditionalColumns()
             ->defaultFormat('pdf')
+            ->disableCsv()
         ]
       );
   }

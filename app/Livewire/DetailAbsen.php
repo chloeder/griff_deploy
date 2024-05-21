@@ -117,6 +117,9 @@ class DetailAbsen extends Component implements HasTable, HasForms
       ->actions([])
       ->bulkActions([
         FilamentExportBulkAction::make('export')
+          ->disableAdditionalColumns()
+          ->defaultFormat('pdf')
+          ->disableCsv()
       ]);
   }
   public function render()
