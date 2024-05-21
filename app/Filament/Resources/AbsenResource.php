@@ -219,10 +219,28 @@ class AbsenResource extends Resource
             ->label('Absen Keluar')
             ->icon('heroicon-o-pencil-square')
             ->action(function (Absen $record, array $data): void {
-              $record->tanggal_keluar = Carbon::now()->format('Y-m-d');
-              $record->waktu_keluar = Carbon::now()->format('H:i:s');
-              $record->lokasi_keluar = $data['lokasi_keluar'];
-              $record->save();
+              if ($record->tanggal_keluar === null && $record->waktu_keluar === null) {
+                session(['tanggal_keluar' => Carbon::now()->format('Y-m-d')]);
+                session(['waktu_keluar' => Carbon::now()->format('H:i:s')]);
+              }
+
+              if ($record->status_keluar === 'Proses' || $record->status_keluar === null) {
+                $record->tanggal_keluar = session('tanggal_keluar');
+                $record->waktu_keluar = session('waktu_keluar');
+                $record->lokasi_keluar = $data['lokasi_keluar'];
+                $record->save();
+              }
+
+              if ($record->status_keluar === 'Ditolak') {
+                $record->lokasi_keluar = $data['lokasi_keluar'];
+                $record->status_keluar = 'Proses';
+                $record->save();
+              }
+
+              if ($record->status_keluar === 'Disetujui') {
+                $record->lokasi_keluar = $data['lokasi_keluar'];
+                $record->save();
+              }
 
               Notification::make()
                 ->title('Absen Keluar Sukses')
