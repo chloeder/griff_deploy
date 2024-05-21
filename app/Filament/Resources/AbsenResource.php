@@ -91,6 +91,9 @@ class AbsenResource extends Resource
         Tables\Columns\TextColumn::make('user.karyawan.nama')
           ->sortable()
           ->searchable(),
+        Tables\Columns\TextColumn::make('username')
+          ->sortable()
+          ->searchable(),
         Tables\Columns\TextColumn::make('keterangan_absen')
           ->badge()
           ->color(fn (string $state): string => match ($state) {
