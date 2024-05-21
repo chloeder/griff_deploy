@@ -2,6 +2,8 @@
 
 namespace App\Filament\Pages;
 
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use App\Models\Absen;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\DatePicker;
@@ -11,11 +13,6 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-use pxlrbt\FilamentExcel\Columns\Column;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -39,32 +36,17 @@ class LaporanAbsen extends Page implements HasTable
     config()->set('database.connections.mysql.strict', false);
     DB::reconnect();
     return $table
-      ->headerActions([
-        ExportAction::make()
-          ->label('Export Excel')
-          ->exports([
-            ExcelExport::make()->withColumns([
-              Column::make('leader.nama')->heading('Leader'),
-              Column::make('klaster.nama')->heading('Klaster'),
-              Column::make('sub_klaster.nama')->heading('Sub Klaster'),
-              Column::make('sales.user.username')->heading('Sales'),
-              Column::make('toko.nama')->heading('Toko'),
-              Column::make('toko.tipe_toko')->heading('Tipe Toko'),
-              Column::make('omset_po')->heading('Omset PO')->format(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED2),
-              Column::make('tanggal')->heading('Tanggal'),
-              Column::make('pjp_status')->heading('PJP Status'),
-            ])
-              ->withFilename('Laporan Omset - ' . date('Y-m-d '))
-              ->fromTable()
-          ])
-          ->hidden(auth()->user()->role === 'SPG' || auth()->user()->role === 'SE/SM'),
-      ])
+      // ->headerActions([
+      //   FilamentExportHeaderAction::make('export')
+      //     ->disableAdditionalColumns()
+      //     ->defaultFormat('pdf')
+      // ])
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'Leader') {
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
-          $query->leftJoin('users', 'users.id', '=', 'absens.user_id')
+          $query->select('absens.*')->join('users', 'users.id', '=', 'absens.user_id')
             ->where('status_absen', 'Disetujui')
             ->where('users.username', 'like', '%' . $lastWord . '%')
             ->groupBy('absens.user_id')
@@ -181,8 +163,12 @@ class LaporanAbsen extends Page implements HasTable
           ->url(fn (Absen $record): string => route('detail-absen', ['id' => $record->user_id]))
           ->icon('heroicon-o-eye')
       ])
-      ->bulkActions([
-        // ExportBulkAction::make(),
-      ]);
+      ->bulkActions(
+        [
+          FilamentExportBulkAction::make('Export')
+            ->disableAdditionalColumns()
+            ->defaultFormat('pdf')
+        ]
+      );
   }
 }

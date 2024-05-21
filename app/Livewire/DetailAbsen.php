@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use App\Models\Absen;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DatePicker;
@@ -112,7 +114,9 @@ class DetailAbsen extends Component implements HasTable, HasForms
           })
       ])
       ->actions([])
-      ->bulkActions([]);
+      ->bulkActions([
+        FilamentExportBulkAction::make('export')
+      ]);
   }
   public function render()
   {
