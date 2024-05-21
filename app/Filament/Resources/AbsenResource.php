@@ -39,16 +39,6 @@ class AbsenResource extends Resource
   {
     return $form
       ->schema([
-        // Section::make('Pilih Karyawan')
-        //   ->description('Form ini dikhusukan untuk Admin')
-        //   ->schema([
-        //     Forms\Components\Select::make('user_id')
-        //       ->relationship('user.karyawan', 'nama')
-        //       ->searchable()
-        //       ->preload()
-        //       ->label('Karyawan')
-        //       ->required(),
-        //   ])->columns(1)->hidden(Auth::user()->role !== 'Admin'),
         Section::make('Absen Masuk')
           ->description('Form Absensi Masuk')
           ->schema([
@@ -77,20 +67,6 @@ class AbsenResource extends Resource
               ->disabled(fn (Get $get) => $get('keterangan_absen') === 'Alpa' || $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui'),
           ])
           ->columns(2)->collapsible(),
-        Section::make('Absen Keluar')
-          ->description('Form Absensi Keluar')
-          ->schema([
-            Forms\Components\Select::make('lokasi_keluar')
-              ->options([
-                'Kantor' => 'Kantor',
-                'Distributor' => 'Distributor',
-                'Toko' => 'Toko',
-              ])
-              ->searchable(),
-          ])
-          ->columns(1)
-          ->collapsible()
-          ->hidden(fn (Get $get) => $get('status_absen') !== 'Disetujui'),
       ]);
   }
 
@@ -182,14 +158,7 @@ class AbsenResource extends Resource
       ])
       ->actions([
         ActionGroup::make([
-          Tables\Actions\EditAction::make()
-            ->hidden(function ($record) {
-              if (Auth::user()->role === 'Leader' && $record->user->role === 'Leader') {
-                if ($record->lokasi_keluar != null) {
-                  return true;
-                }
-              }
-            }),
+          Tables\Actions\EditAction::make(),
           Tables\Actions\DeleteAction::make()
             ->hidden(function ($record) {
               if (Auth::user()->role === 'Leader' && $record->user->role === 'Leader') {
@@ -229,6 +198,38 @@ class AbsenResource extends Resource
                   return $absen->status_absen;
                 })
             ]),
+          Tables\Actions\Action::make('Isi Absen Keluar')
+            ->icon('heroicon-o-newspaper')
+            ->action(function (Absen $record, array $data): void {
+              $record->tanggal_keluar = Carbon::now()->format('Y-m-d');
+              $record->waktu_keluar = Carbon::now()->format('H:i:s');
+              $record->lokasi_keluar = $data['lokasi_keluar'];
+              $record->save();
+
+              Notification::make()
+                ->title('Absen Keluar Sukses')
+                ->success()
+                ->send();
+            })
+            ->form([
+              Select::make('lokasi_keluar')
+                ->label('Lokasi Keluar')
+                ->options([
+                  'Kantor' => 'Kantor',
+                  'Distributor' => 'Distributor',
+                  'Toko' => 'Toko',
+                ])
+                ->required()
+                ->searchable()
+                ->default(function (Absen $absen) {
+                  return $absen->lokasi_keluar;
+                })
+            ])
+            ->hidden(function ($record) {
+              if ($record->lokasi_keluar == null && $record->status_absen === null) {
+                return true;
+              }
+            }),
         ])
       ])
       ->bulkActions([
