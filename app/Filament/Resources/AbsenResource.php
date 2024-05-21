@@ -114,6 +114,17 @@ class AbsenResource extends Resource
         Tables\Columns\TextColumn::make('lokasi_masuk')
           ->sortable()
           ->searchable(),
+        Tables\Columns\TextColumn::make('status_absen')
+          ->label('Status Absen Masuk')
+          ->badge()
+          ->color(fn (string $state): string => match ($state) {
+            'Disetujui' => 'success',
+            'Ditolak' => 'danger',
+            'Proses' => 'warning',
+          })
+          ->default('Proses')
+          ->searchable()
+          ->sortable(),
         Tables\Columns\TextColumn::make('tanggal_keluar')
           ->date()
           ->sortable(),
@@ -125,7 +136,8 @@ class AbsenResource extends Resource
         Tables\Columns\TextColumn::make('lokasi_keluar')
           ->searchable()
           ->sortable(),
-        Tables\Columns\TextColumn::make('status_absen')
+        Tables\Columns\TextColumn::make('status_keluar')
+          ->label('Status Absen Keluar')
           ->badge()
           ->color(fn (string $state): string => match ($state) {
             'Disetujui' => 'success',
@@ -158,20 +170,22 @@ class AbsenResource extends Resource
       ])
       ->actions([
         ActionGroup::make([
-          Tables\Actions\EditAction::make(),
-          Tables\Actions\DeleteAction::make()
+          Tables\Actions\EditAction::make()
+            ->label('Ubah Absen Masuk')
             ->hidden(function ($record) {
-              if (Auth::user()->role === 'Leader' && $record->user->role === 'Leader') {
+              if ($record->status_absen === 'Disetujui') {
                 return true;
               }
             }),
-          Tables\Actions\Action::make('Edit Status')
+          Tables\Actions\Action::make('Edit Status Masuk')
             ->hidden(function ($record) {
               if (Auth::user()->role === 'Leader' && $record->user->role === 'Leader') {
                 return true;
               } elseif (Auth::user()->role === 'SE/SM' && $record->user->role === 'SE/SM') {
                 return true;
               } elseif (Auth::user()->role === 'SPG' && $record->user->role === 'SPG') {
+                return true;
+              } elseif ($record->status_absen == 'Disetujui') {
                 return true;
               }
             })
@@ -181,7 +195,7 @@ class AbsenResource extends Resource
               $record->save();
 
               Notification::make()
-                ->title('Status Absen Berhasil Diubah')
+                ->title('Status Absen Masuk Berhasil Diubah')
                 ->success()
                 ->send();
             })
@@ -198,13 +212,13 @@ class AbsenResource extends Resource
                   return $absen->status_absen;
                 })
             ]),
-          Tables\Actions\Action::make('ISI ABSEN KELUAR')
-            ->icon('heroicon-o-newspaper')
+          Tables\Actions\Action::make('Absen Keluar')
+            ->label('Absen Keluar')
+            ->icon('heroicon-o-pencil-square')
             ->action(function (Absen $record, array $data): void {
               $record->tanggal_keluar = Carbon::now()->format('Y-m-d');
               $record->waktu_keluar = Carbon::now()->format('H:i:s');
               $record->lokasi_keluar = $data['lokasi_keluar'];
-              $record->status_absen = 'Proses';
               $record->save();
 
               Notification::make()
@@ -227,7 +241,48 @@ class AbsenResource extends Resource
                 })
             ])
             ->hidden(function ($record) {
-              if ($record->lokasi_keluar == null && $record->status_absen === null) {
+              if ($record->status_absen === null || $record->status_absen === 'Proses' || $record->status_absen === 'Ditolak') {
+                return true;
+              }
+            }),
+          Tables\Actions\Action::make('Edit Status Keluar')
+            ->hidden(function ($record) {
+              if (Auth::user()->role === 'Leader' && $record->user->role === 'Leader') {
+                return true;
+              } elseif (Auth::user()->role === 'SE/SM' && $record->user->role === 'SE/SM') {
+                return true;
+              } elseif (Auth::user()->role === 'SPG' && $record->user->role === 'SPG') {
+                return true;
+              } elseif ($record->status_absen !== 'Disetujui') {
+                return true;
+              }
+            })
+            ->icon('heroicon-o-pencil')
+            ->action(function (Absen $record, array $data): void {
+              $record->status_keluar = $data['status_keluar'];
+              $record->save();
+
+              Notification::make()
+                ->title('Status Absen Keluar Berhasil Diubah')
+                ->success()
+                ->send();
+            })
+            ->form([
+              Select::make('status_keluar')
+                ->label('Status Absen')
+                ->options([
+                  'Disetujui' => 'Setujui',
+                  'Ditolak' => 'Tolak',
+                ])
+                ->required()
+                ->searchable()
+                ->default(function (Absen $absen) {
+                  return $absen->status_absen;
+                })
+            ]),
+          Tables\Actions\DeleteAction::make()
+            ->hidden(function ($record) {
+              if (Auth::user()->role === 'Leader' && $record->user->role === 'Leader') {
                 return true;
               }
             }),

@@ -38,6 +38,7 @@ class Absen extends Model
     'lokasi_keluar',
     'status_absen',
     'tanggal_absen',
+    'status_keluar',
   ];
 
   /**
