@@ -63,7 +63,8 @@ class AbsenResource extends Resource
               ->afterStateUpdated(function (Set $set) {
                 $set('lokasi_masuk', null);
               })
-              ->searchable()
+              ->searchable(fn (Get $get) => $get('keterangan_absen') === 'Alpa' || $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui')
+              ->disabled(fn (Get $get) => $get('keterangan_absen') === 'Alpa' || $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui')
               ->required(),
             Forms\Components\Select::make('lokasi_masuk')
               ->options([
@@ -72,8 +73,8 @@ class AbsenResource extends Resource
                 'Toko' => 'Toko',
               ])
               ->live()
-              ->searchable(fn (Get $get) => $get('keterangan_absen') === 'Alpa' || $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin')
-              ->disabled(fn (Get $get) => $get('keterangan_absen') === 'Alpa' || $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin'),
+              ->searchable(fn (Get $get) => $get('keterangan_absen') === 'Alpa' || $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui')
+              ->disabled(fn (Get $get) => $get('keterangan_absen') === 'Alpa' || $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui'),
           ])
           ->columns(2)->collapsible(),
         Section::make('Absen Keluar')
@@ -181,8 +182,20 @@ class AbsenResource extends Resource
       ])
       ->actions([
         ActionGroup::make([
-          Tables\Actions\EditAction::make(),
-          Tables\Actions\DeleteAction::make(),
+          Tables\Actions\EditAction::make()
+            ->hidden(function ($record) {
+              if (Auth::user()->role === 'Leader' && $record->user->role === 'Leader') {
+                if ($record->lokasi_keluar != null) {
+                  return true;
+                }
+              }
+            }),
+          Tables\Actions\DeleteAction::make()
+            ->hidden(function ($record) {
+              if (Auth::user()->role === 'Leader' && $record->user->role === 'Leader') {
+                return true;
+              }
+            }),
           Tables\Actions\Action::make('Edit Status')
             ->hidden(function ($record) {
               if (Auth::user()->role === 'Leader' && $record->user->role === 'Leader') {
