@@ -36,11 +36,7 @@ class LaporanAbsen extends Page implements HasTable
     config()->set('database.connections.mysql.strict', false);
     DB::reconnect();
     return $table
-      // ->headerActions([
-      //   FilamentExportHeaderAction::make('export')
-      //     ->disableAdditionalColumns()
-      //     ->defaultFormat('pdf')
-      // ])
+      ->paginated([10, 25, 50, 100])
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'Leader') {
           $word = auth()->user()->username;
@@ -52,7 +48,7 @@ class LaporanAbsen extends Page implements HasTable
             ->groupBy('absens.user_id')
             ->orderBy('users.username', 'asc');
         } else {
-          $query->join('users', 'users.id', '=', 'absens.user_id')
+          $query->select('absens.*')->join('users', 'users.id', '=', 'absens.user_id')
             ->where('status_absen', 'Disetujui')
             ->groupBy('absens.user_id');
         }

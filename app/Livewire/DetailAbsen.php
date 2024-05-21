@@ -32,6 +32,7 @@ class DetailAbsen extends Component implements HasTable, HasForms
   public function table(Table $table): Table
   {
     return $table
+      ->paginated([10, 25, 50, 100])
       ->groups([
         Group::make('keterangan_absen')
           ->label('KETERANGAN ABSEN'),
