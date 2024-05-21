@@ -70,11 +70,9 @@ class LaporanAbsen extends Page implements HasTable
             $sampai = session('Sampai');
             return $record->join('users', 'users.id', '=', 'absens.user_id')
               ->where('users.id', $record->user_id)
-              ->where('status_absen', 'Disetujui')
+              ->where('status_keluar', 'Disetujui')
               ->where('keterangan_absen', 'Hadir')
-              ->where('tanggal_keluar', '!=', null)
-              ->where('waktu_keluar', '!=', null)
-              ->where('lokasi_keluar', '!=', null)
+              ->where('status_keluar', 'Disetujui')
               ->whereBetween('absens.tanggal_absen', [$dari, $sampai])
               ->count();
           }),
