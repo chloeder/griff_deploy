@@ -10,6 +10,12 @@ use Filament\Resources\Pages\EditRecord;
 class EditAbsen extends EditRecord
 {
   protected static string $resource = AbsenResource::class;
+  protected function mutateFormDataBeforeSave(array $data): array
+  {
+
+    $data['status_absen'] = 'Proses';
+    return $data;
+  }
 
   protected function getHeaderActions(): array
   {
