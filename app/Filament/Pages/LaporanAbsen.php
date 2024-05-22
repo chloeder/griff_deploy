@@ -76,18 +76,6 @@ class LaporanAbsen extends Page implements HasTable
               ->whereBetween('absens.tanggal_absen', [$dari, $sampai])
               ->count();
           }),
-        TextColumn::make('alpa')
-          ->label('Alpa')
-          ->state(function (Absen $record): string {
-            $dari = session('Dari');
-            $sampai = session('Sampai');
-            return $record->join('users', 'users.id', '=', 'absens.user_id')
-              ->where('users.id', $record->user_id)
-              ->where('status_absen', 'Disetujui')
-              ->where('keterangan_absen', 'Alpa')
-              ->whereBetween('absens.tanggal_absen', [$dari, $sampai])
-              ->count();
-          }),
         TextColumn::make('izin')
           ->label('Izin')
           ->state(function (Absen $record): string {

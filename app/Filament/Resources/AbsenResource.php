@@ -45,7 +45,6 @@ class AbsenResource extends Resource
             Forms\Components\Select::make('keterangan_absen')
               ->options([
                 'Hadir' => 'Hadir',
-                'Alpa' => 'Alpa',
                 'Izin' => 'Izin',
                 'Sakit' => 'Sakit',
               ])
@@ -53,8 +52,8 @@ class AbsenResource extends Resource
               ->afterStateUpdated(function (Set $set) {
                 $set('lokasi_masuk', null);
               })
-              ->searchable(fn (Get $get) => $get('keterangan_absen') === 'Alpa' || $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui')
-              ->disabled(fn (Get $get) => $get('keterangan_absen') === 'Alpa' || $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui')
+              ->searchable(fn (Get $get) => $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui')
+              ->disabled(fn (Get $get) => $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui')
               ->required(),
             Forms\Components\Select::make('lokasi_masuk')
               ->options([
@@ -63,8 +62,8 @@ class AbsenResource extends Resource
                 'Toko' => 'Toko',
               ])
               ->live()
-              ->searchable(fn (Get $get) => $get('keterangan_absen') === 'Alpa' || $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui')
-              ->disabled(fn (Get $get) => $get('keterangan_absen') === 'Alpa' || $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui'),
+              ->searchable(fn (Get $get) => $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui')
+              ->disabled(fn (Get $get) => $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui'),
           ])
           ->columns(2)->collapsible(),
       ]);
@@ -98,7 +97,6 @@ class AbsenResource extends Resource
           ->badge()
           ->color(fn (string $state): string => match ($state) {
             'Hadir' => 'success',
-            'Alpa' => 'danger',
             'Izin' => 'warning',
             'Sakit' => 'info',
           })

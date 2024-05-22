@@ -53,7 +53,6 @@ class DetailAbsen extends Component implements HasTable, HasForms
           ->badge()
           ->color(fn (string $state): string => match ($state) {
             'Hadir' => 'success',
-            'Alpa' => 'danger',
             'Izin' => 'warning',
             'Sakit' => 'info',
           })
