@@ -38,7 +38,7 @@ class DetailAbsen extends Component implements HasTable, HasForms
           ->label('KETERANGAN ABSEN'),
       ])
       ->defaultGroup('keterangan_absen')
-      ->query(Absen::query()->where('user_id', $this->userId)->where('status_absen', 'Disetujui'))
+      ->query(Absen::query()->where('user_id', $this->userId)->where('status_keluar', 'Disetujui'))
       ->poll('10s')
       ->columns([
         TextColumn::make('id')
