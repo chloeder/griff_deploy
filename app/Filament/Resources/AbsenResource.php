@@ -108,7 +108,7 @@ class AbsenResource extends Resource
           ->sortable()
           ->searchable(),
         Tables\Columns\TextColumn::make('waktu_masuk')
-          ->label('Waktu Masuk')
+          ->label('Waktu Masuks')
           ->time()
           ->sortable()
           ->searchable(),
