@@ -45,7 +45,7 @@ class PerencanaanPerjalananPermanentStockPolicy
    */
   public function delete(User $user, PerencanaanPerjalananPermanentStock $perencanaanPerjalananPermanentStock): bool
   {
-    return $user->isAdmin();
+    return $user->isAdmin() || $user->isLeader();
   }
 
   /**
