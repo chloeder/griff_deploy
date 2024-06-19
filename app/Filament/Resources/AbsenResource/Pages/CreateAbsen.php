@@ -31,7 +31,15 @@ class CreateAbsen extends CreateRecord
         if ($data['keterangan_absen'] === 'Hadir') {
           $data['tanggal_masuk'] = Carbon::now()->format('Y-m-d');
           $data['waktu_masuk'] = Carbon::now()->format('H:i:s');
-        } else {
+        } elseif ($data['keterangan_absen'] === 'Izin') {
+          $data['lokasi_masuk'] = null;
+          $data['tanggal_masuk'] = null;
+          $data['waktu_masuk'] = null;
+        } elseif ($data['keterangan_absen'] === 'Sakit') {
+          $data['lokasi_masuk'] = null;
+          $data['tanggal_masuk'] = null;
+          $data['waktu_masuk'] = null;
+        } elseif ($data['keterangan_absen'] === 'Alpa') {
           $data['lokasi_masuk'] = null;
           $data['tanggal_masuk'] = null;
           $data['waktu_masuk'] = null;
