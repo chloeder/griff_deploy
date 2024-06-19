@@ -45,7 +45,7 @@ class PerencanaanPerjalananPermanentPolicy
    */
   public function delete(User $user, PerencanaanPerjalananPermanent $perencanaanPerjalananPermanent): bool
   {
-    return $user->isAdmin();
+    return $user->isAdmin() || $user->isLeader();
   }
 
   /**
