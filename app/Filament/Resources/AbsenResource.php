@@ -53,7 +53,7 @@ class AbsenResource extends Resource
                 $set('lokasi_masuk', null);
               })
               ->searchable(fn (Get $get) => $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui')
-              ->disabled(fn (Get $get) => $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui')
+              // ->disabled(fn (Get $get) => $get('keterangan_absen') === 'Sakit' || $get('keterangan_absen') === 'Izin' || $get('status_absen') === 'Disetujui')
               ->required(),
             Forms\Components\Select::make('lokasi_masuk')
               ->options([
