@@ -48,10 +48,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
   protected static ?string $navigationIcon = 'heroicon-o-truck';
   protected static ?string $navigationGroup = 'Aksi';
   protected static ?int $navigationSort = 9;
-  public static function getRecordTitle(?Model $record): string|null|Htmlable
-  {
-    return $record->name;
-  }
+
   public static function form(Form $form): Form
   {
     return $form
@@ -328,9 +325,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
         ])
       ])
       ->bulkActions([
-        Tables\Actions\BulkActionGroup::make([
-          Tables\Actions\DeleteBulkAction::make(),
-        ]),
+        Tables\Actions\BulkActionGroup::make([]),
       ]);
   }
 
