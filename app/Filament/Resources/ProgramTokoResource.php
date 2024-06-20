@@ -102,11 +102,17 @@ class ProgramTokoResource extends Resource
   {
     return $table
       ->modifyQueryUsing(function (Builder $query) {
-        if (auth()->user()->role !== 'Admin') {
+        if (auth()->user()->role === 'Leader') {
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
           $data =  $query->select('program_tokos.*', 'leaders.nama as leader')->join('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->join('leaders', 'leaders.id', '=', 'tokos.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
+          dd($lastWord);
+        } elseif (auth()->user()->role === 'SE/SM') {
+          $data = $query->select('program_tokos.*', 'tokos.sales_marketing_id as SE')->join('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->where('sales_marketing_id', auth()->user()->id)->get();
+          // dd($data);
+        } elseif (auth()->user()->role === 'SPG') {
+          $data = $query->select('program_tokos.*', 'tokos.sales_promotion_id as SPG')->join('tokos', 'tokos.id', '=', 'program_tokos.toko_id')->where('sales_promotion_id', auth()->user()->id)->get();
           // dd($data);
         }
       })
