@@ -172,7 +172,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
-          $data = $query->leftJoin('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanents.leader_id')->select('perencanaan_perjalanan_permanents.*', 'leaders.nama as leader')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
+          $data = $query->select('perencanaan_perjalanan_permanents.*', 'leaders.nama')->join('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanents.leader_id')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
           // dd($data);
         }
       })

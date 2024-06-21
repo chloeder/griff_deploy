@@ -80,9 +80,11 @@ class AbsenResource extends Resource
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
-          $data = $query->select('absens.*', 'users.username as username')->join('users', 'users.id', '=', 'absens.user_id')->where('users.username', 'like', '%' . $lastWord . '%')->get();
-          // dd($data->toArray());
+          $data = $query->select('absens.*', 'users.username')->join('users', 'users.id', '=', 'absens.user_id')->where('users.username', 'like', '%' . $lastWord . '%')->get();
           // dd($lastWord);
+          // dd($data->toArray());
+        } else {
+          $query->select('absens.*', 'users.username')->join('users', 'users.id', '=', 'absens.user_id')->get();
         }
       })
       ->poll('10s')
