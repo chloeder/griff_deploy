@@ -110,7 +110,6 @@ class LaporanTokoProgram extends Page implements HasTable
           ->label('Omset Sistem')
           ->prefix('Rp. ')
           ->numeric(locale: 'id')
-          ->searchable()
           ->sortable(),
         TextColumn::make('omset_faktur')
           ->badge()
