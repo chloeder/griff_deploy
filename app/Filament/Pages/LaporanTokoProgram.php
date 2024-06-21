@@ -73,7 +73,7 @@ class LaporanTokoProgram extends Page implements HasTable
           ->label('SPG')
           ->searchable()
           ->sortable(),
-        TextColumn::make('toko.nama')
+        TextColumn::make('toko.nama_toko')
           ->searchable()
           ->sortable(),
         TextColumn::make('toko.tipe_toko')
@@ -172,7 +172,7 @@ class LaporanTokoProgram extends Page implements HasTable
               $record->omset_faktur = $data['omset_faktur'];
               $record->save();
               Notification::make()
-                ->title('Omset Faktur Toko ' . $record->toko->nama . ' berhasil disimpan')
+                ->title('Omset Faktur Toko ' . $record->toko->nama_toko . ' berhasil disimpan')
                 ->success()
                 ->send();
             })

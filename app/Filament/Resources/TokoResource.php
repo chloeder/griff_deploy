@@ -42,10 +42,10 @@ class TokoResource extends Resource
         Section::make('Tentukan Nama Toko')
           ->description('Form ini akan menentukan nama toko')
           ->schema([
-            Forms\Components\TextInput::make('nama')
+            Forms\Components\TextInput::make('nama_toko')
               ->required()
               ->live(onBlur: true)
-              ->afterStateUpdated(fn (Set $set, ?string $state) => $set('nama', strtoupper($state))),
+              ->afterStateUpdated(fn (Set $set, ?string $state) => $set('nama_toko', strtoupper($state))),
             Forms\Components\Select::make('tipe_toko')
               ->options([
                 'MT HPM' => 'MT HPM',
@@ -150,6 +150,7 @@ class TokoResource extends Resource
   public static function table(Table $table): Table
   {
     return $table
+      ->searchDebounce('500ms')
       ->recordUrl(null)
       ->modifyQueryUsing(function (Builder $query) {
         if (auth()->user()->role === 'SE/SM' || auth()->user()->role === 'SPG') {
@@ -158,16 +159,15 @@ class TokoResource extends Resource
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
-          $query->leftJoin('leaders', 'leaders.id', '=', 'tokos.leader_id')->select('tokos.*', 'leaders.nama as leader')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
-          // dd($data);
+          $data = $query->leftJoin('leaders', 'leaders.id', '=', 'tokos.leader_id')->select('tokos.*')->where('leaders.nama', 'like', '%' . $lastWord . '%')->get();
+          // dd($data->toArray());
         }
       })
       ->columns([
         Tables\Columns\TextColumn::make('id')
           ->label('No')
           ->rowIndex()
-          ->sortable()
-          ->searchable(),
+          ->sortable(),
         Tables\Columns\TextColumn::make('leader.nama')
           ->sortable()
           ->searchable(),
@@ -185,10 +185,12 @@ class TokoResource extends Resource
           ->label('SPG')
           ->sortable()
           ->searchable(),
-        Tables\Columns\TextColumn::make('nama')
+        Tables\Columns\TextColumn::make('nama_toko')
+          ->label('Toko')
           ->sortable()
           ->searchable(),
         Tables\Columns\TextColumn::make('tipe_toko')
+          ->label('Tipe Toko')
           ->sortable()
           ->searchable(),
         // Tables\Columns\TextColumn::make('status')

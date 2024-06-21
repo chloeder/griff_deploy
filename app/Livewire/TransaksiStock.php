@@ -52,7 +52,7 @@ class TransaksiStock extends Component implements HasTable, HasForms
       ->query(\App\Models\TransaksiStock::query()->where('pjp_stock_id', $this->pjpId))
       ->poll('10s')
       ->columns([
-        Tables\Columns\TextColumn::make('perencanaan.toko.nama')
+        Tables\Columns\TextColumn::make('perencanaan.toko.nama_toko')
           ->toggleable(isToggledHiddenByDefault: true)
           ->searchable()
           ->sortable(),

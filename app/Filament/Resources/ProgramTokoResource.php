@@ -47,10 +47,10 @@ class ProgramTokoResource extends Resource
                   return Toko::query()
                     ->join('leaders', 'leaders.id', '=', 'tokos.leader_id')
                     ->where('leaders.user_id', Auth::user()->id)
-                    ->pluck('tokos.nama', 'tokos.id');
+                    ->pluck('tokos.nama_toko', 'tokos.id');
                   // dd($data);
                 } else {
-                  return Toko::all()->pluck('nama', 'id');
+                  return Toko::all()->pluck('nama_toko', 'id');
                 }
               })
               ->label('Toko')
@@ -123,7 +123,7 @@ class ProgramTokoResource extends Resource
           ->rowIndex()
           ->searchable()
           ->sortable(),
-        Tables\Columns\TextColumn::make('toko.nama')
+        Tables\Columns\TextColumn::make('toko.nama_toko')
           ->searchable()
           ->sortable(),
         Tables\Columns\TextColumn::make('toko.leader.nama')

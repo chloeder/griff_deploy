@@ -42,7 +42,7 @@ class TransaksiNoPo extends Component implements HasTable, HasForms
       ])
       ->query(\App\Models\TransaksiNoPo::query()->where('perencanaan_perjalanan_permanent_id', $this->pjpId))
       ->groups([
-        Group::make('perencanaan.toko.nama')
+        Group::make('perencanaan.toko.nama_toko')
           ->label('TOKO')
           ->collapsible(),
         Group::make('sku.sku')
@@ -56,7 +56,7 @@ class TransaksiNoPo extends Component implements HasTable, HasForms
           ->collapsible(),
       ])
       ->columns([
-        TextColumn::make('perencanaan.toko.nama')
+        TextColumn::make('perencanaan.toko.nama_toko')
           ->searchable()
           ->sortable(),
         TextColumn::make('sales.user.username')

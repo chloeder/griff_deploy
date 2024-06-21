@@ -62,7 +62,7 @@ class DetailCoverageSE extends Component implements HasTable, HasForms
           ->label('Sales')
           ->searchable()
           ->sortable(),
-        TextColumn::make('toko.nama')
+        TextColumn::make('toko.nama_toko')
           ->searchable()
           ->sortable(),
         TextColumn::make('omset_po')

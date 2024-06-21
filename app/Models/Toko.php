@@ -31,22 +31,22 @@ class Toko extends Model
     'sub_klaster_id',
     'sales_marketing_id',
     'sales_promotion_id',
-    'nama',
+    'nama_toko',
     'tipe_toko',
     'status',
   ];
 
   public function leader(): BelongsTo
   {
-    return $this->belongsTo(Leader::class, 'leader_id', 'id');
+    return $this->belongsTo(Leader::class);
   }
   public function klaster(): BelongsTo
   {
-    return $this->belongsTo(Klaster::class, 'klaster_id', 'id');
+    return $this->belongsTo(Klaster::class);
   }
   public function sub_klaster(): BelongsTo
   {
-    return $this->belongsTo(SubKlaster::class, 'sub_klaster_id', 'id');
+    return $this->belongsTo(SubKlaster::class);
   }
   public function sales_marketing(): BelongsTo
   {

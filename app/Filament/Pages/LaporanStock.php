@@ -60,7 +60,7 @@ class LaporanStock extends Page implements HasTable
           ->label('Sales')
           ->searchable()
           ->sortable(),
-        TextColumn::make('toko.nama')
+        TextColumn::make('toko.nama_toko')
           ->searchable()
           ->sortable(),
         TextColumn::make('toko.tipe_toko')

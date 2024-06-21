@@ -132,7 +132,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
                 ->where('klaster_id', $get('klaster_id'))
                 ->where('sales_marketing_id', $get('sales_id'))
                 ->orWhere('sales_promotion_id', $get('sales_id'))
-                ->pluck('nama', 'id'))
+                ->pluck('nama_toko', 'id'))
               ->searchable()
               ->required(),
           ])
@@ -196,7 +196,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
           ->label('Sales')
           ->searchable()
           ->sortable(),
-        Tables\Columns\TextColumn::make('toko.nama')
+        Tables\Columns\TextColumn::make('toko.nama_toko')
           ->searchable()
           ->sortable(),
         Tables\Columns\TextColumn::make('omset_po')

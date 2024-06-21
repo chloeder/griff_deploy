@@ -42,7 +42,7 @@ class LaporanNoPo extends Page implements HasTable
             Column::make('klaster.nama')->heading('Klaster'),
             Column::make('sub_klaster.nama')->heading('Sub Klaster'),
             Column::make('sales.user.username')->heading('Sales'),
-            Column::make('toko.nama')->heading('Toko'),
+            Column::make('toko.nama_toko')->heading('Toko'),
             Column::make('toko.tipe_toko')->heading('Tipe Toko'),
             Column::make('no_po.alasan')->heading('Alasan No PO'),
             Column::make('tanggal')->heading('Tanggal'),
@@ -77,7 +77,7 @@ class LaporanNoPo extends Page implements HasTable
           ->label('Sales')
           ->searchable()
           ->sortable(),
-        TextColumn::make('toko.nama')
+        TextColumn::make('toko.nama_toko')
           ->searchable()
           ->sortable(),
         TextColumn::make('toko.tipe_toko')

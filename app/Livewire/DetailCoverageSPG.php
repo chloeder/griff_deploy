@@ -62,11 +62,13 @@ class DetailCoverageSPG extends Component implements HasTable, HasForms
           ->label('Sales')
           ->searchable()
           ->sortable(),
-        TextColumn::make('toko.nama')
+        TextColumn::make('toko.nama_toko')
+          ->label('Toko')
           ->toggleable(isToggledHiddenByDefault: false)
           ->searchable()
           ->sortable(),
         TextColumn::make('toko.tipe_toko')
+          ->label('Tipe Toko')
           ->toggleable(isToggledHiddenByDefault: false)
           ->searchable()
           ->sortable(),

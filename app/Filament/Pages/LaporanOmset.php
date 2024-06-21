@@ -48,7 +48,7 @@ class LaporanOmset extends Page implements HasTable
             Column::make('klaster.nama')->heading('Klaster'),
             Column::make('sub_klaster.nama')->heading('Sub Klaster'),
             Column::make('sales.user.username')->heading('Sales'),
-            Column::make('toko.nama')->heading('Toko'),
+            Column::make('toko.nama_toko')->heading('Toko'),
             Column::make('toko.tipe_toko')->heading('Tipe Toko'),
             Column::make('omset_po')->heading('Omset PO')->format(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED2),
             Column::make('tanggal')->heading('Tanggal'),
@@ -86,7 +86,7 @@ class LaporanOmset extends Page implements HasTable
         Group::make('sales.user.username')
           ->label('SALES')
           ->collapsible(),
-        Group::make('toko.nama')
+        Group::make('toko.nama_toko')
           ->label('TOKO')
           ->collapsible(),
         Group::make('tanggal')
@@ -107,7 +107,7 @@ class LaporanOmset extends Page implements HasTable
           ->label('Sales')
           ->searchable()
           ->sortable(),
-        TextColumn::make('toko.nama')
+        TextColumn::make('toko.nama_toko')
           ->searchable()
           ->sortable(),
         TextColumn::make('toko.tipe_toko')

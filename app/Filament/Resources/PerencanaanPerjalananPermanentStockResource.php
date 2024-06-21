@@ -126,7 +126,7 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
                 ->where('klaster_id', $get('klaster_id'))
                 ->where('sales_marketing_id', $get('sales_id'))
                 ->Orwhere('sales_promotion_id', $get('sales_id'))
-                ->pluck('nama', 'id'))
+                ->pluck('nama_toko', 'id'))
               ->searchable()
               ->required(),
           ])
@@ -194,11 +194,13 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
           ->label('Sales')
           ->searchable()
           ->sortable(),
-        Tables\Columns\TextColumn::make('toko.nama')
+        Tables\Columns\TextColumn::make('toko.nama_toko')
+          ->label('Toko')
           ->toggleable(isToggledHiddenByDefault: false)
           ->searchable()
           ->sortable(),
         Tables\Columns\TextColumn::make('toko.tipe_toko')
+          ->label('Tipe Toko')
           ->toggleable(isToggledHiddenByDefault: false)
           ->searchable()
           ->sortable(),
