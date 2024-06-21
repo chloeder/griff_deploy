@@ -56,8 +56,7 @@ class KlasterResource extends Resource
       ->columns([
         Tables\Columns\TextColumn::make('id')
           ->label('No')
-          ->rowIndex()
-          ->searchable(),
+          ->rowIndex(),
         Tables\Columns\TextColumn::make('leader.nama')
           ->searchable(),
         // Tables\Columns\TextColumn::make('area')

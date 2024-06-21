@@ -175,7 +175,6 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
         Tables\Columns\TextColumn::make('id')
           ->label('No')
           ->rowIndex()
-          ->searchable()
           ->sortable(),
         Tables\Columns\TextColumn::make('leader.nama')
           ->toggleable(isToggledHiddenByDefault: true)

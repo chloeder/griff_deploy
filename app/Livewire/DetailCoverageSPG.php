@@ -43,7 +43,6 @@ class DetailCoverageSPG extends Component implements HasTable, HasForms
         TextColumn::make('id')
           ->label('No')
           ->rowIndex()
-          ->searchable()
           ->sortable(),
         TextColumn::make('leader.nama')
           ->toggleable(isToggledHiddenByDefault: true)

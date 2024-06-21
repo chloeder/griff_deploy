@@ -44,7 +44,6 @@ class DetailAbsen extends Component implements HasTable, HasForms
         TextColumn::make('id')
           ->label('No')
           ->rowIndex()
-          ->searchable()
           ->sortable(),
         TextColumn::make('user.karyawan.nama')
           ->sortable()

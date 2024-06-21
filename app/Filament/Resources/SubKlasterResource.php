@@ -67,8 +67,7 @@ class SubKlasterResource extends Resource
         Tables\Columns\TextColumn::make('id')
           ->label('No')
           ->rowIndex()
-          ->sortable()
-          ->searchable(),
+          ->sortable(),
         Tables\Columns\TextColumn::make('leader.nama')
           ->sortable()
           ->searchable(),

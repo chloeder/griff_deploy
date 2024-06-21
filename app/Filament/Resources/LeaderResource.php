@@ -59,7 +59,6 @@ class LeaderResource extends Resource
         Tables\Columns\TextColumn::make('id')
           ->label('No')
           ->rowIndex()
-          ->searchable()
           ->sortable(),
         Tables\Columns\TextColumn::make('nama')
           ->label('Leader')

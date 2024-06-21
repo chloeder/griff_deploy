@@ -60,8 +60,7 @@ class StockKeepingUnitResource extends Resource
         Tables\Columns\TextColumn::make('id')
           ->label('No')
           ->rowIndex()
-          ->sortable()
-          ->searchable(),
+          ->sortable(),
         Tables\Columns\TextColumn::make('sku')
           ->label('SKU')
           ->sortable()

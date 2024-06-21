@@ -78,7 +78,6 @@ class UserResource extends Resource
         Tables\Columns\TextColumn::make('id')
           ->label('No')
           ->rowIndex()
-          ->searchable()
           ->sortable(),
         Tables\Columns\TextColumn::make('karyawan.nama')
           ->searchable()->sortable(),
