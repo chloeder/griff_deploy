@@ -32,6 +32,7 @@ class UserResource extends Resource
           ->description('Form ini digunakan untuk membuat akun yang akan digunakan untuk login ke aplikasi.')
           ->schema([
             Forms\Components\TextInput::make('username')
+              ->unique()
               ->required()
               ->minLength(7)
               ->live(onBlur: true)
