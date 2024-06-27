@@ -97,6 +97,7 @@ class PerencanaanPerjalananPermanentResource extends Resource
                 ->where('klaster_id', $get('klaster_id'))
                 ->pluck('nama', 'id'))
               ->live()
+              ->disabled()
               ->searchable()
               ->required(),
           ])
