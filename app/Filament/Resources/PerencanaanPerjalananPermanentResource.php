@@ -96,10 +96,6 @@ class PerencanaanPerjalananPermanentResource extends Resource
               ->options(fn (Get $get): Collection => SubKlaster::query()
                 ->where('klaster_id', $get('klaster_id'))
                 ->pluck('nama', 'id'))
-              ->afterStateUpdated(function (Set $set) {
-                $set('sales_id', null);
-                $set('toko_id', null);
-              })
               ->live()
               ->searchable()
               ->required(),
@@ -129,12 +125,23 @@ class PerencanaanPerjalananPermanentResource extends Resource
             Forms\Components\Select::make('toko_id')
               ->label('Toko')
               ->options(fn (Get $get): Collection => Toko::query()
-                ->where('klaster_id', $get('klaster_id'))
-                ->where('sales_marketing_id', $get('sales_id'))
-                ->orWhere('sales_promotion_id', $get('sales_id'))
+                ->where(function ($query) use ($get) {
+                  $query->where('sales_marketing_id', $get('sales_id'))
+                    ->orWhere('sales_promotion_id', $get('sales_id'));
+                })
                 ->pluck('nama_toko', 'id'))
+              ->live()
               ->searchable()
-              ->required(),
+              ->required()
+              ->afterStateUpdated(function (Set $set, Get $get) {
+                // Assuming 'toko_id' is available in $get, and Toko model has 'sub_klaster_id' attribute
+                $tokoId = $get('toko_id');
+                if ($tokoId) {
+                  $subKlasterId = Toko::find($tokoId)->sub_klaster_id ?? null;
+                  // dd($subKlasterId);
+                  $set('sub_klaster_id', $subKlasterId);
+                }
+              }),
           ])
           ->columns(2)->columnSpan(2)
           ->disabled(function (string $context): bool {
