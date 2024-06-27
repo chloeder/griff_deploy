@@ -86,12 +86,10 @@ class PerencanaanPerjalananPermanentStockResource extends Resource
               ->required(),
             Forms\Components\Select::make('sub_klaster_id')
               ->label('Sub Klaster')
-              ->options(fn (Get $get): Collection => SubKlaster::query()
-                ->where('klaster_id', $get('klaster_id'))
-                ->pluck('nama', 'id'))
-              ->live()
               ->searchable()
-              ->required(),
+              ->required()
+              ->disabled()
+              ->relationship('sub_klaster', 'nama'),
           ])
           ->columns(3)
           ->disabled(function (string $context): bool {
