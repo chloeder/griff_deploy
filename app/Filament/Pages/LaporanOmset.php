@@ -72,8 +72,7 @@ class LaporanOmset extends Page implements HasTable
             ->where('omset_po', '>', 0)
             ->where('pjp_status', 'VISIT')->get();
         } else {
-          $data = $query->where('omset_po', '>', 0)->where('pjp_status', 'VISIT');
-          // dd($data->toArray());
+          $query->where('omset_po', '>', 0)->where('pjp_status', 'VISIT');
         }
       })
       ->poll('10s')
@@ -88,9 +87,10 @@ class LaporanOmset extends Page implements HasTable
         Group::make('sub_klaster.nama')
           ->label('SUB KLASTER')
           ->collapsible(),
-        Group::make('sales.user.username')
+        Group::make('sales_id')
           ->label('SALES')
-          ->collapsible(),
+          ->collapsible()
+          ->getTitleFromRecordUsing(fn (PerencanaanPerjalananPermanent $record): string => $record->sales->user->username),
         Group::make('toko.nama_toko')
           ->label('TOKO')
           ->collapsible(),
