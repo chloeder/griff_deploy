@@ -73,7 +73,7 @@ class PerencanaanPerjalananPermanent extends Model
   }
   public function sales(): BelongsTo
   {
-    return $this->belongsTo(Sales::class, 'sales_id', 'user_id');
+    return $this->belongsTo(Sales::class);
   }
 
   public function transaksis(): HasMany
