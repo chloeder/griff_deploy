@@ -40,11 +40,19 @@ class LaporanCoverageSPG extends Page implements HasTable
           $word = auth()->user()->username;
           $pieces = explode(' ', $word, 3);
           $lastWord = $pieces[0] . ' ' . $pieces[1];
-          $data = $query->select('perencanaan_perjalanan_permanent_stocks.*', 'leaders.nama as leader')->join('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanent_stocks.leader_id')->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')->where('role', 'SPG')->where('leaders.nama', 'like', '%' . $lastWord . '%')->groupBy('sales_id');
+          $data = $query->select('perencanaan_perjalanan_permanent_stocks.*', 'leaders.nama as leader')
+            ->join('leaders', 'leaders.id', '=', 'perencanaan_perjalanan_permanent_stocks.leader_id')
+            ->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')
+            ->where('role', 'SPG')
+            ->where('leaders.nama', 'like', '%' . $lastWord . '%')
+            ->groupBy(['sales_id', 'sub_klaster_id']);
         } elseif (auth()->user()->role === 'SPG') {
-          $data = $query->where('sales_id', auth()->user()->id)->groupBy('sales_id');
+          $data = $query->where('sales_id', auth()->user()->id)
+            ->groupBy('sales_id');
         } else {
-          $query->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')->where('role', 'SPG')->groupBy('sales_id');
+          $query->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')
+            ->where('role', 'SPG')
+            ->groupBy(['sales_id', 'sub_klaster_id']);
         }
       })
       ->poll('10s')
@@ -72,7 +80,9 @@ class LaporanCoverageSPG extends Page implements HasTable
               ->where('role', 'SPG')
               ->whereBetween('tanggal', [$dari, $sampai])
               ->get();
-            return $data->where('sales_id', $record->sales_id)->count();
+            return $data->where('sales_id', $record->sales_id)
+              ->where('sub_klaster_id', $record->sub_klaster_id)
+              ->count();
           }),
         TextColumn::make('visit')
           ->label('VISIT')
@@ -84,7 +94,9 @@ class LaporanCoverageSPG extends Page implements HasTable
               ->where('pjp_status', 'VISIT')
               ->whereBetween('tanggal', [$dari, $sampai])
               ->get();
-            return $data->where('sales_id', $record->sales_id)->count();
+            return $data->where('sales_id', $record->sales_id)
+              ->where('sub_klaster_id', $record->sub_klaster_id)
+              ->count();
           }),
         TextColumn::make('ec')
           ->label('EC')
@@ -99,7 +111,9 @@ class LaporanCoverageSPG extends Page implements HasTable
               ->whereBetween('tanggal', [$dari, $sampai])
               ->get();
             // dd($data->toArray());
-            return $data->where('sales_id', $record->sales_id)->count();
+            return $data->where('sales_id', $record->sales_id)
+              ->where('sub_klaster_id', $record->sub_klaster_id)
+              ->count();
           }),
         TextColumn::make('oa')
           ->label('OA')
@@ -114,9 +128,9 @@ class LaporanCoverageSPG extends Page implements HasTable
               ->whereBetween('tanggal', [$dari, $sampai])
               ->groupBy('toko_id')
               ->get();
-            // dd($data->toArray());
-            $result = $data->where('sales_id', $record->sales_id)->count();
-            // dd($result);
+            $result = $data->where('sales_id', $record->sales_id)
+              ->where('sub_klaster_id', $record->sub_klaster_id)
+              ->count();
             return $result;
           }),
       ])
@@ -148,7 +162,7 @@ class LaporanCoverageSPG extends Page implements HasTable
       ->actions([
         Action::make('Lihat')
           ->hidden(Auth::user()->role !== 'Admin' && Auth::user()->role !== 'Leader')
-          ->url(fn (PerencanaanPerjalananPermanentStock $record): string => route('detail-coverage-spg', ['id' => $record->sales_id]))
+          ->url(fn (PerencanaanPerjalananPermanentStock $record): string => route('detail-coverage-spg', ['id' => $record->sales_id, 'sub_klaster_id' => $record->sub_klaster_id]))
           ->icon('heroicon-o-eye')
       ])
       ->bulkActions([

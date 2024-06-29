@@ -57,13 +57,13 @@ class SalesResource extends Resource
               })
               ->searchable()
               ->required(),
-            Forms\Components\Select::make('sub_klaster_id')
-              ->label('Sub Klaster')
-              ->options(fn (Get $get): Collection => SubKlaster::query()
-                ->where('klaster_id', $get('klaster_id'))
-                ->pluck('nama', 'id'))
-              ->searchable()
-              ->required(),
+            // Forms\Components\Select::make('sub_klaster_id')
+            //   ->label('Sub Klaster')
+            //   ->options(fn (Get $get): Collection => SubKlaster::query()
+            //     ->where('klaster_id', $get('klaster_id'))
+            //     ->pluck('nama', 'id'))
+            //   ->searchable()
+            //   ->required(),
             Forms\Components\Select::make('user_id')
               ->label('Sales')
               ->relationship('user', 'username', function (Builder $query) {
@@ -91,9 +91,9 @@ class SalesResource extends Resource
         Tables\Columns\TextColumn::make('klaster.nama')
           ->searchable()
           ->sortable(),
-        Tables\Columns\TextColumn::make('sub_klaster.nama')
-          ->searchable()
-          ->sortable(),
+        // Tables\Columns\TextColumn::make('sub_klaster.nama')
+        //   ->searchable()
+        //   ->sortable(),
         Tables\Columns\TextColumn::make('user.username')
           ->label('Posisi')
           ->searchable()

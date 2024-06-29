@@ -21,10 +21,12 @@ class DetailCoverageSPG extends Component implements HasTable, HasForms
   use InteractsWithForms;
 
   public $salesId;
+  public $subKlasterId;
 
   public function mount($id)
   {
     $this->salesId = $id;
+    $this->subKlasterId = request()->query('sub_klaster_id');
   }
 
   public function table(Table $table): Table
@@ -37,7 +39,7 @@ class DetailCoverageSPG extends Component implements HasTable, HasForms
           ->label('PJP STATUS'),
       ])
       ->defaultGroup('pjp_status')
-      ->query(PerencanaanPerjalananPermanentStock::query()->where('sales_id', $this->salesId))
+      ->query(PerencanaanPerjalananPermanentStock::query()->where('sales_id', $this->salesId)->where('sub_klaster_id', $this->subKlasterId))
       ->poll('10s')
       ->columns([
         TextColumn::make('id')

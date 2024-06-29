@@ -49,19 +49,20 @@ class LaporanCoverageSE extends Page implements HasTable
             ->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
             ->where('role', 'SE/SM')
             ->where('leaders.nama', 'like', '%' . $lastWord . '%')
-            ->groupBy('sales_id')
+            ->groupBy(['sales_id', 'sub_klaster_id'])
             ->orderBy('users.username', 'asc');
 
           // dd($data->toArray());
         } elseif (auth()->user()->role === 'SE/SM') {
           $data = $query->where('sales_id', auth()->user()->id)
-            ->groupBy('sales_id');
+            ->groupBy(['sales_id', 'sub_klaster_id']);
         } else {
           $data = $query->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanents.sales_id')
             ->where('role', 'SE/SM')
-            ->groupBy('sales_id')
-            ->orderBy('users.username', 'asc');
-          // dd($data);
+            ->groupBy(['sales_id', 'sub_klaster_id'])
+            ->orderBy('users.username', 'asc')
+            ->get();
+          // dd($data->toArray());
         }
       })
       ->poll('10s')
@@ -89,7 +90,9 @@ class LaporanCoverageSE extends Page implements HasTable
               ->where('role', 'SE/SM')
               ->whereBetween('tanggal', [$dari, $sampai])
               ->get();
-            return $data->where('sales_id', $record->sales_id)->count();
+            return $data->where('sales_id', $record->sales_id)
+              ->where('sub_klaster_id', $record->sub_klaster_id)
+              ->count();
           }),
         TextColumn::make('visit')
           ->label('VISIT')
@@ -101,7 +104,9 @@ class LaporanCoverageSE extends Page implements HasTable
               ->where('pjp_status', 'VISIT')
               ->whereBetween('tanggal', [$dari, $sampai])
               ->get();
-            return $data->where('sales_id', $record->sales_id)->count();
+            return $data->where('sales_id', $record->sales_id)
+              ->where('sub_klaster_id', $record->sub_klaster_id)
+              ->count();
           }),
         TextColumn::make('ec')
           ->label('EC')
@@ -115,7 +120,9 @@ class LaporanCoverageSE extends Page implements HasTable
               ->where('alasan', null)
               ->whereBetween('tanggal', [$dari, $sampai])
               ->get();
-            return $data->where('sales_id', $record->sales_id)->count();
+            return $data->where('sales_id', $record->sales_id)
+              ->where('sub_klaster_id', $record->sub_klaster_id)
+              ->count();
           }),
         TextColumn::make('oa')
           ->label('OA')
@@ -130,10 +137,9 @@ class LaporanCoverageSE extends Page implements HasTable
               ->whereBetween('tanggal', [$dari, $sampai])
               ->groupBy('toko_id')
               ->get();
-            // dd($data->toArray());
-            $result = $data->where('sales_id', $record->sales_id)->count();
-            // dd($result);
-            return $result;
+            return $data->where('sales_id', $record->sales_id)
+              ->where('sub_klaster_id', $record->sub_klaster_id)
+              ->count();
           }),
       ])
       ->filters([
@@ -164,7 +170,7 @@ class LaporanCoverageSE extends Page implements HasTable
       ->actions([
         Action::make('Lihat')
           ->hidden(Auth::user()->role !== 'Admin' && Auth::user()->role !== 'Leader')
-          ->url(fn (PerencanaanPerjalananPermanent $record): string => route('detail-coverage-se', ['id' => $record->sales_id]))
+          ->url(fn (PerencanaanPerjalananPermanent $record): string => route('detail-coverage-se', ['id' => $record->sales_id, 'sub_klaster_id' => $record->sub_klaster_id]))
           ->icon('heroicon-o-eye')
       ])
       ->bulkActions([
