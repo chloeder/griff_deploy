@@ -48,7 +48,7 @@ class LaporanCoverageSPG extends Page implements HasTable
             ->groupBy(['sales_id', 'sub_klaster_id']);
         } elseif (auth()->user()->role === 'SPG') {
           $data = $query->where('sales_id', auth()->user()->id)
-            ->groupBy('sales_id');
+            ->groupBy(['sales_id', 'sub_klaster_id']);
         } else {
           $query->join('users', 'users.id', '=', 'perencanaan_perjalanan_permanent_stocks.sales_id')
             ->where('role', 'SPG')

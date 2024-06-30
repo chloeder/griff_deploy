@@ -196,10 +196,11 @@ class PerencanaanPerjalananPermanentResource extends Resource
         Tables\Columns\TextColumn::make('sub_klaster.nama')
           ->searchable()
           ->sortable(),
-        Tables\Columns\TextColumn::make('sales.user.username')
+        Tables\Columns\TextColumn::make('sales_id')
           ->label('Sales')
           ->searchable()
-          ->sortable(),
+          ->sortable()
+          ->formatStateUsing(fn (PerencanaanPerjalananPermanent $record): string => $record->sales->user->username),
         Tables\Columns\TextColumn::make('toko.nama_toko')
           ->searchable()
           ->sortable(),
