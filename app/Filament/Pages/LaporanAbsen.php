@@ -67,10 +67,9 @@ class LaporanAbsen extends Page implements HasTable
           ->label('Masuk')
           ->state(function (Absen $record): string {
             $dari = session('Dari');
-            $sampai = session('Sampai');
+            $sampai = session('Sampai') . ' 23:59:59';
             return $record->join('users', 'users.id', '=', 'absens.user_id')
               ->where('users.id', $record->user_id)
-              ->where('status_keluar', 'Disetujui')
               ->where('keterangan_absen', 'Hadir')
               ->where('status_keluar', 'Disetujui')
               ->whereBetween('absens.tanggal_absen', [$dari, $sampai])
@@ -80,23 +79,25 @@ class LaporanAbsen extends Page implements HasTable
           ->label('Izin')
           ->state(function (Absen $record): string {
             $dari = session('Dari');
-            $sampai = session('Sampai');
-            return $record->join('users', 'users.id', '=', 'absens.user_id')
+            $sampai = session('Sampai') . ' 23:59:59';
+            $data = $record->join('users', 'users.id', '=', 'absens.user_id')
               ->where('users.id', $record->user_id)
-              ->where('status_absen', 'Disetujui')
               ->where('keterangan_absen', 'Izin')
+              ->where('status_absen', 'Disetujui')
               ->whereBetween('absens.tanggal_absen', [$dari, $sampai])
               ->count();
+            // dd($data);
+            return $data;
           }),
         TextColumn::make('sakit')
           ->label('Sakit')
           ->state(function (Absen $record): string {
             $dari = session('Dari');
-            $sampai = session('Sampai');
+            $sampai = session('Sampai') . ' 23:59:59';
             return $record->join('users', 'users.id', '=', 'absens.user_id')
               ->where('users.id', $record->user_id)
-              ->where('status_absen', 'Disetujui')
               ->where('keterangan_absen', 'Sakit')
+              ->where('status_absen', 'Disetujui')
               ->whereBetween('absens.tanggal_absen', [$dari, $sampai])
               ->count();
           }),
@@ -124,7 +125,7 @@ class LaporanAbsen extends Page implements HasTable
               ->default(now()->startOfMonth()),
 
             DatePicker::make('Sampai')
-              ->default(now()->endOfMonth()),
+              ->default(now())
           ])
           ->query(function (Builder $query, array $data): Builder {
             // Store the selected date range in the session
